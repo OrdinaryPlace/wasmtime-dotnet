@@ -124,6 +124,56 @@ namespace Wasmtime
         }
 
         /// <summary>
+        /// Defines a shared memory in the linker.
+        /// </summary>
+        /// <param name="module">The module name of the item.</param>
+        /// <param name="name">The name of the item.</param>
+        /// <param name="memory">The shared memory being defined.</param>
+        /// <param name="store">The store to use for definition.</param>
+        public void Define(string module, string name, SharedMemory memory, Store store)
+        {
+            if (memory is null)
+            {
+                throw new ArgumentNullException(nameof(memory));
+            }
+
+            if (store is null)
+            {
+                throw new ArgumentNullException(nameof(store));
+            }
+
+            if (module is null)
+            {
+                throw new ArgumentNullException(nameof(module));
+            }
+
+            if (name is null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            var ext = ((IExternal)memory).AsExtern();
+
+            using var nameBytes = name.ToUTF8(stackalloc byte[Math.Min(64, name.Length * 2)]);
+            using var moduleBytes = module.ToUTF8(stackalloc byte[Math.Min(64, module.Length * 2)]);
+
+            unsafe
+            {
+                fixed (byte* modulePtr = moduleBytes.Span, namePtr = nameBytes.Span)
+                {
+                    var error = Native.wasmtime_linker_define(handle, store.Context.handle, modulePtr, (UIntPtr)moduleBytes.Length, namePtr, (UIntPtr)nameBytes.Length, ext);
+                    if (error != IntPtr.Zero)
+                    {
+                        throw WasmtimeException.FromOwnedError(error);
+                    }
+                }
+            }
+
+            GC.KeepAlive(store);
+            GC.KeepAlive(memory);
+        }
+
+        /// <summary>
         /// Defines an item in the linker.
         /// </summary>
         /// <param name="module">The module name of the item.</param>

@@ -213,6 +213,7 @@ namespace Wasmtime
             }
 
             Is64Bit = Memory.Native.wasmtime_memorytype_is64(type);
+            IsShared = Memory.Native.wasmtime_memorytype_isshared(type);
         }
 
         /// <summary>
@@ -232,6 +233,12 @@ namespace Wasmtime
         /// </summary>
         /// <value><c>true</c> if this type of memory represents a 64-bit memory, <c>false</c> if it represents a 32-bit memory.</value>
         public bool Is64Bit { get; }
+
+        /// <summary>
+        /// Gets a value that indicates whether this type of memory is shared.
+        /// </summary>
+        /// <value><c>true</c> if this type of memory is shared, <c>false</c> otherwise.</value>
+        public bool IsShared { get; }
 
         private static class Native
         {

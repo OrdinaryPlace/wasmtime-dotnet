@@ -563,6 +563,23 @@ namespace Wasmtime
         }
 
         /// <summary>
+        /// Gets an exported shared memory from the instance.
+        /// </summary>
+        /// <param name="name">The name of the exported shared memory.</param>
+        /// <returns>Returns the shared memory if one of that name was exported or null if not.</returns>
+        public SharedMemory? GetSharedMemory(string name)
+        {
+            if (!TryGetExtern(_store.Context, name, out var ext) || ext.kind != ExternKind.SharedMemory)
+            {
+                return null;
+            }
+
+            GC.KeepAlive(_store);
+
+            return new SharedMemory(ext.of.sharedmemory);
+        }
+
+        /// <summary>
         /// Gets an exported global from the instance.
         /// </summary>
         /// <param name="name">The name of the exported global.</param>
@@ -640,6 +657,28 @@ namespace Wasmtime
                 if (@extern.kind == ExternKind.Memory)
                 {
                     yield return (name, _store.GetCachedExtern(@extern.of.memory));
+                }
+            }
+
+            GC.KeepAlive(_store);
+        }
+
+        /// <summary>
+        /// Get all exported shared memories
+        /// </summary>
+        /// <returns>An enumerable of shared memories exported from this instance</returns>
+        public IEnumerable<(string Name, SharedMemory Memory)> GetSharedMemories()
+        {
+            for (var i = 0; i < int.MaxValue; i++)
+            {
+                if (TryGetExtern(i) is not var (name, @extern))
+                {
+                    break;
+                }
+
+                if (@extern.kind == ExternKind.SharedMemory)
+                {
+                    yield return (name, new SharedMemory(@extern.of.sharedmemory));
                 }
             }
 
