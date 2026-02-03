@@ -2,26 +2,27 @@ using System;
 using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.Win32.SafeHandles;
 
 namespace Wasmtime
 {
     /// <summary>
-    /// Represents a WebAssembly memory.
+    /// Represents a WebAssembly shared memory.
     /// </summary>
-    public class Memory : IExternal
+    public class SharedMemory : IExternal, IDisposable
     {
         /// <summary>
-        /// Creates a new WebAssembly memory.
+        /// Creates a new WebAssembly shared memory.
         /// </summary>
-        /// <param name="store">The store to create the memory in.</param>
+        /// <param name="engine">The engine to create the shared memory with.</param>
         /// <param name="minimum">The minimum number of WebAssembly pages.</param>
-        /// <param name="maximum">The maximum number of WebAssembly pages, or <c>null</c> to not specify a maximum.</param>
+        /// <param name="maximum">The maximum number of WebAssembly pages.</param>
         /// <param name="is64Bit"><c>true</c> when memory type represents a 64-bit memory, <c>false</c> when it represents a 32-bit memory.</param>
-        public Memory(Store store, long minimum = 0, long? maximum = null, bool is64Bit = false)
+        public SharedMemory(Engine engine, long minimum = 0, long? maximum = null, bool is64Bit = false)
         {
-            if (store is null)
+            if (engine is null)
             {
-                throw new ArgumentNullException(nameof(store));
+                throw new ArgumentNullException(nameof(engine));
             }
 
             if (minimum < 0)
@@ -39,34 +40,68 @@ namespace Wasmtime
                 throw new ArgumentException("The maximum cannot be less than the minimum.", nameof(maximum));
             }
 
-            this.store = store;
+            if (maximum is null)
+            {
+                throw new ArgumentException("Shared memories require a maximum size.", nameof(maximum));
+            }
+
+            this.engine = engine;
             Minimum = minimum;
             Maximum = maximum;
             Is64Bit = is64Bit;
-            IsShared = false;
-            
-            var typeHandle = Native.wasmtime_memorytype_new((ulong)minimum, maximum is not null, (ulong)(maximum ?? 0), is64Bit, IsShared);
+            IsShared = true;
+
+            var typeHandle = Memory.Native.wasmtime_memorytype_new((ulong)minimum, true, (ulong)maximum.Value, is64Bit, true);
             try
             {
-
-                var error = Native.wasmtime_memory_new(store.Context.handle, typeHandle, out this.memory);
-                GC.KeepAlive(store);
+                var error = Native.wasmtime_sharedmemory_new(engine.NativeHandle, typeHandle, out var memory);
+                GC.KeepAlive(engine);
 
                 if (error != IntPtr.Zero)
                 {
                     throw WasmtimeException.FromOwnedError(error);
                 }
+
+                handle = new Handle(memory);
             }
             finally
             {
-                Native.wasm_memorytype_delete(typeHandle);
+                Memory.Native.wasm_memorytype_delete(typeHandle);
             }
         }
-        
+
+        internal SharedMemory(IntPtr sharedMemory)
+        {
+            if (sharedMemory == IntPtr.Zero)
+            {
+                throw new ArgumentNullException(nameof(sharedMemory));
+            }
+
+            handle = new Handle(sharedMemory);
+
+            var typeHandle = Native.wasmtime_sharedmemory_type(handle);
+            try
+            {
+                Minimum = (long)Memory.Native.wasmtime_memorytype_minimum(typeHandle);
+
+                if (Memory.Native.wasmtime_memorytype_maximum(typeHandle, out ulong max))
+                {
+                    Maximum = (long)max;
+                }
+
+                Is64Bit = Memory.Native.wasmtime_memorytype_is64(typeHandle);
+                IsShared = Memory.Native.wasmtime_memorytype_isshared(typeHandle);
+            }
+            finally
+            {
+                Memory.Native.wasm_memorytype_delete(typeHandle);
+            }
+        }
+
         /// <summary>
         /// The size, in bytes, of a WebAssembly memory page.
         /// </summary>
-        public const int PageSize = 65536;
+        public const int PageSize = Memory.PageSize;
 
         /// <summary>
         /// Gets the minimum memory size (in WebAssembly page units).
@@ -77,7 +112,7 @@ namespace Wasmtime
         /// <summary>
         /// Gets the maximum memory size (in WebAssembly page units).
         /// </summary>
-        /// <value>The maximum memory size (in WebAssembly page units), or <c>null</c> if no maximum is specified.</value>
+        /// <value>The maximum memory size (in WebAssembly page units).</value>
         public long? Maximum { get; }
 
         /// <summary>
@@ -98,8 +133,8 @@ namespace Wasmtime
         /// <returns>Returns the current size of the memory, in WebAssembly page units.</returns>
         public long GetSize()
         {
-            var size = (long)Native.wasmtime_memory_size(store.Context.handle, this.memory);
-            GC.KeepAlive(store);
+            var size = (long)Native.wasmtime_sharedmemory_size(handle);
+            GC.KeepAlive(this);
             return size;
         }
 
@@ -109,8 +144,8 @@ namespace Wasmtime
         /// <returns>Returns the current length of the memory, in bytes.</returns>
         public long GetLength()
         {
-            var length = checked((long)Native.wasmtime_memory_data_size(store.Context.handle, this.memory));
-            GC.KeepAlive(store);
+            var length = checked((long)Native.wasmtime_sharedmemory_data_size(handle));
+            GC.KeepAlive(this);
             return length;
         }
 
@@ -133,8 +168,8 @@ namespace Wasmtime
         /// </remarks>
         public unsafe IntPtr GetPointer()
         {
-            var data = Native.wasmtime_memory_data(store.Context.handle, this.memory);
-            GC.KeepAlive(store);
+            var data = Native.wasmtime_sharedmemory_data(handle);
+            GC.KeepAlive(this);
             return (nint)data;
         }
 
@@ -171,7 +206,7 @@ namespace Wasmtime
         /// <remarks>
         /// <para>
         /// The span may become invalid if the memory grows.
-        /// 
+        ///
         /// This may happen if the memory is explicitly requested to grow or
         /// grows as a result of WebAssembly execution.
         /// </para>
@@ -239,14 +274,6 @@ namespace Wasmtime
         public unsafe Span<T> GetSpan<T>(long address, int length)
             where T : unmanaged
         {
-            var span = GetSpan<T>(store.Context, memory, address, length);
-            GC.KeepAlive(store);
-            return span;
-        }
-
-        internal static unsafe Span<T> GetSpan<T>(StoreContext context, ExternMemory memory, long address, int length)
-            where T : unmanaged
-        {
             if (address < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(address));
@@ -257,9 +284,9 @@ namespace Wasmtime
                 throw new ArgumentOutOfRangeException(nameof(length));
             }
 
-            var data = Native.wasmtime_memory_data(context.handle, memory);
+            var data = Native.wasmtime_sharedmemory_data(handle);
 
-            var memoryLength = checked((long)Native.wasmtime_memory_data_size(context.handle, memory));
+            var memoryLength = checked((long)Native.wasmtime_sharedmemory_data_size(handle));
 
             // Note: A Span<T> can span more than 2 GiB bytes if sizeof(T) > 1.
             long byteLength = (long)length * sizeof(T);
@@ -268,6 +295,8 @@ namespace Wasmtime
             {
                 throw new ArgumentException("The specified address and length exceed the Memory's bounds.");
             }
+
+            GC.KeepAlive(this);
 
             return new Span<T>((T*)(data + address), length);
         }
@@ -534,8 +563,8 @@ namespace Wasmtime
                 throw new ArgumentOutOfRangeException(nameof(delta));
             }
 
-            var error = Native.wasmtime_memory_grow(store.Context.handle, this.memory, (ulong)delta, out var prev);
-            GC.KeepAlive(store);
+            var error = Native.wasmtime_sharedmemory_grow(handle, (ulong)delta, out var prev);
+            GC.KeepAlive(this);
 
             if (error != IntPtr.Zero)
             {
@@ -545,86 +574,76 @@ namespace Wasmtime
             return (long)prev;
         }
 
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            handle.Dispose();
+        }
+
+        internal Handle NativeHandle
+        {
+            get
+            {
+                if (handle.IsInvalid || handle.IsClosed)
+                {
+                    throw new ObjectDisposedException(typeof(SharedMemory).FullName);
+                }
+
+                return handle;
+            }
+        }
+
         Extern IExternal.AsExtern()
         {
             return new Extern
             {
-                kind = ExternKind.Memory,
-                of = new ExternUnion { memory = this.memory }
+                kind = ExternKind.SharedMemory,
+                of = new ExternUnion { sharedmemory = NativeHandle.DangerousGetHandle() }
             };
         }
 
-        Store? IExternal.Store => store;
+        Store? IExternal.Store => null;
 
-        internal Memory(Store store, ExternMemory memory)
+        internal class Handle : SafeHandleZeroOrMinusOneIsInvalid
         {
-            this.memory = memory;
-            this.store = store;
-
-            var typeHandle = Native.wasmtime_memory_type(store.Context.handle, this.memory);
-            try
+            public Handle(IntPtr handle)
+                : base(true)
             {
-                GC.KeepAlive(store);
-
-                Minimum = (long)Native.wasmtime_memorytype_minimum(typeHandle);
-
-                if (Native.wasmtime_memorytype_maximum(typeHandle, out ulong max))
-                {
-                    Maximum = (long)max;
-                }
-
-                Is64Bit = Native.wasmtime_memorytype_is64(typeHandle);
-                IsShared = Native.wasmtime_memorytype_isshared(typeHandle);
+                SetHandle(handle);
             }
-            finally
+
+            protected override bool ReleaseHandle()
             {
-                Native.wasm_memorytype_delete(typeHandle);
+                Native.wasmtime_sharedmemory_delete(handle);
+                return true;
             }
         }
 
         internal static class Native
         {
             [DllImport(Engine.LibraryName)]
-            public static extern IntPtr wasmtime_memory_new(IntPtr context, IntPtr typeHandle, out ExternMemory memory);
+            public static extern IntPtr wasmtime_sharedmemory_new(Engine.Handle engine, IntPtr typeHandle, out IntPtr memory);
 
             [DllImport(Engine.LibraryName)]
-            public static unsafe extern byte* wasmtime_memory_data(IntPtr context, in ExternMemory memory);
+            public static extern void wasmtime_sharedmemory_delete(IntPtr memory);
 
             [DllImport(Engine.LibraryName)]
-            public static extern nuint wasmtime_memory_data_size(IntPtr context, in ExternMemory memory);
+            public static extern IntPtr wasmtime_sharedmemory_type(Handle memory);
 
             [DllImport(Engine.LibraryName)]
-            public static extern ulong wasmtime_memory_size(IntPtr context, in ExternMemory memory);
+            public static unsafe extern byte* wasmtime_sharedmemory_data(Handle memory);
 
             [DllImport(Engine.LibraryName)]
-            public static extern IntPtr wasmtime_memory_grow(IntPtr context, in ExternMemory memory, ulong delta, out ulong prev);
+            public static extern nuint wasmtime_sharedmemory_data_size(Handle memory);
 
             [DllImport(Engine.LibraryName)]
-            public static extern IntPtr wasmtime_memory_type(IntPtr context, in ExternMemory memory);
+            public static extern ulong wasmtime_sharedmemory_size(Handle memory);
 
             [DllImport(Engine.LibraryName)]
-            public static extern IntPtr wasmtime_memorytype_new(ulong min, [MarshalAs(UnmanagedType.I1)] bool max_present, ulong max, [MarshalAs(UnmanagedType.I1)] bool is_64, [MarshalAs(UnmanagedType.I1)] bool shared);
-
-            [DllImport(Engine.LibraryName)]
-            public static extern ulong wasmtime_memorytype_minimum(IntPtr type);
-
-            [DllImport(Engine.LibraryName)]
-            [return: MarshalAs(UnmanagedType.I1)]
-            public static extern bool wasmtime_memorytype_maximum(IntPtr type, out ulong max);
-
-            [DllImport(Engine.LibraryName)]
-            [return: MarshalAs(UnmanagedType.I1)]
-            public static extern bool wasmtime_memorytype_is64(IntPtr type);
-
-            [DllImport(Engine.LibraryName)]
-            [return: MarshalAs(UnmanagedType.I1)]
-            public static extern bool wasmtime_memorytype_isshared(IntPtr type);
-
-            [DllImport(Engine.LibraryName)]
-            public static extern void wasm_memorytype_delete(IntPtr handle);
+            public static extern IntPtr wasmtime_sharedmemory_grow(Handle memory, ulong delta, out ulong prev);
         }
 
-        private readonly Store store;
-        private readonly ExternMemory memory;
+        private readonly Handle handle;
+        private readonly Engine? engine;
     }
 }

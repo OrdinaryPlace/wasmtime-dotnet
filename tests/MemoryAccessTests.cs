@@ -65,6 +65,7 @@ namespace Wasmtime.Tests
             memoryExport.Minimum.Should().Be(0x10000);
             memoryExport.Maximum.Should().BeNull();
             memoryExport.Is64Bit.Should().BeFalse();
+            memoryExport.IsShared.Should().BeFalse();
 
             var instance = Linker.Instantiate(Store, Fixture.Module);
             var memory = instance.GetMemory("mem");
@@ -72,6 +73,7 @@ namespace Wasmtime.Tests
             memory.Minimum.Should().Be(0x10000);
             memory.Maximum.Should().BeNull();
             memory.Is64Bit.Should().BeFalse();
+            memory.IsShared.Should().BeFalse();
             memory.GetSize().Should().Be(0x10000);
             memory.GetLength().Should().Be(0x100000000);
 

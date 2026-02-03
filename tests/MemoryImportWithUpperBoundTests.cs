@@ -31,6 +31,7 @@ namespace Wasmtime.Tests
             memory.Minimum.Should().Be(10L);
             memory.Maximum.Should().Be(100L);
             memory.Is64Bit.Should().BeFalse();
+            memory.IsShared.Should().BeFalse();
         }
     }
 }

@@ -162,6 +162,7 @@ The .NET embedding of Wasmtime enables .NET code to instantiate WebAssembly modu
       SourceUrl="$(ReleaseURLBase)/$(ReleaseFileNameBase)-%(Wasmtime.Arch)-%(Wasmtime.OS)-c-api.%(Wasmtime.FileExtension)"
       DestinationFolder="$(BaseIntermediateOutputPath)"
       SkipUnchangedFiles="true"
+      ContinueOnError="WarnAndContinue"
     />
 
     <!-- Workaround for https://github.com/msys2/MSYS2-packages/issues/1548 -->
@@ -184,6 +185,17 @@ The .NET embedding of Wasmtime enables .NET code to instantiate WebAssembly modu
         <PackagePath>runtimes/%(Wasmtime.RID)/native/%(Wasmtime.LibraryFilename)</PackagePath>
       </Content>
     </ItemGroup>
+  </Target>
+
+  <Target Name="DownloadWasmtimeFallback" AfterTargets="DownloadWasmtime">
+    <Exec
+      Condition="('$(Packing)'=='true' Or '%(Wasmtime.Copy)'=='true') And !Exists('$(BaseIntermediateOutputPath)$(ReleaseFileNameBase)-%(Wasmtime.Arch)-%(Wasmtime.OS)-c-api.%(Wasmtime.FileExtension)') And '$(OS)' != 'Windows_NT'"
+      Command="curl -L --fail --retry 5 --retry-delay 2 --retry-connrefused -o &quot;$(BaseIntermediateOutputPath)$(ReleaseFileNameBase)-%(Wasmtime.Arch)-%(Wasmtime.OS)-c-api.%(Wasmtime.FileExtension)&quot; &quot;$(ReleaseURLBase)/$(ReleaseFileNameBase)-%(Wasmtime.Arch)-%(Wasmtime.OS)-c-api.%(Wasmtime.FileExtension)&quot;"
+    />
+    <Exec
+      Condition="('$(Packing)'=='true' Or '%(Wasmtime.Copy)'=='true') And !Exists('$(BaseIntermediateOutputPath)$(ReleaseFileNameBase)-%(Wasmtime.Arch)-%(Wasmtime.OS)-c-api.%(Wasmtime.FileExtension)') And '$(OS)' == 'Windows_NT'"
+      Command="powershell -NoProfile -Command &quot;$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue'; $uri = '$(ReleaseURLBase)/$(ReleaseFileNameBase)-%(Wasmtime.Arch)-%(Wasmtime.OS)-c-api.%(Wasmtime.FileExtension)'; $out = '$(BaseIntermediateOutputPath)$(ReleaseFileNameBase)-%(Wasmtime.Arch)-%(Wasmtime.OS)-c-api.%(Wasmtime.FileExtension)'; for ($i = 0; $i -lt 5; $i++) { try { Invoke-WebRequest -UseBasicParsing -Uri $uri -OutFile $out; break } catch { if ($i -eq 4) { throw } Start-Sleep -Seconds 2 } }&quot;"
+    />
   </Target>
 
    <Target Name="CopyWasmtimeLibrary" BeforeTargets="BeforeBuild">
