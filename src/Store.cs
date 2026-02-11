@@ -296,8 +296,88 @@ namespace Wasmtime
                     throw new ObjectDisposedException(typeof(Store).FullName);
                 }
 
+                EnsureAccessibleFromCurrentThread();
                 return new StoreContext(Native.wasmtime_store_context(NativeHandle));
             }
+        }
+
+        /// <summary>
+        /// Enters an execution scope for this store.
+        /// </summary>
+        /// <remarks>
+        /// Wasmtime stores can move across threads but cannot be used concurrently from more than
+        /// one thread. This scope tracks active wasm execution to prevent cross-thread re-entry
+        /// from reaching undefined behavior in the unmanaged API.
+        /// </remarks>
+        internal ExecutionScope EnterExecutionScope()
+        {
+            var currentThreadId = Environment.CurrentManagedThreadId;
+
+            lock (executionSync)
+            {
+                if (executionOwnerThreadId == 0 || executionOwnerThreadId == currentThreadId)
+                {
+                    executionOwnerThreadId = currentThreadId;
+                    executionDepth++;
+                    return new ExecutionScope(this);
+                }
+            }
+
+            throw CreateConcurrentStoreAccessException();
+        }
+
+        internal void EnsureAccessibleFromCurrentThread()
+        {
+            var currentThreadId = Environment.CurrentManagedThreadId;
+
+            lock (executionSync)
+            {
+                if (executionOwnerThreadId != 0 && executionOwnerThreadId != currentThreadId)
+                {
+                    throw CreateConcurrentStoreAccessException();
+                }
+            }
+        }
+
+        private void ExitExecutionScope()
+        {
+            var currentThreadId = Environment.CurrentManagedThreadId;
+
+            lock (executionSync)
+            {
+                if (executionOwnerThreadId != currentThreadId || executionDepth <= 0)
+                {
+                    throw new InvalidOperationException("Invalid store execution scope state.");
+                }
+
+                executionDepth--;
+                if (executionDepth == 0)
+                {
+                    executionOwnerThreadId = 0;
+                }
+            }
+        }
+
+        private static InvalidOperationException CreateConcurrentStoreAccessException()
+        {
+            return new InvalidOperationException(
+                "Concurrent access to a Store from multiple threads is not supported. " +
+                "Use one Store per thread or serialize access so only one thread uses a Store at a time.");
+        }
+
+        internal readonly ref struct ExecutionScope
+        {
+            internal ExecutionScope(Store store)
+            {
+                this.store = store;
+            }
+
+            public void Dispose()
+            {
+                store.ExitExecutionScope();
+            }
+
+            private readonly Store store;
         }
 
         internal class Handle : SafeHandleZeroOrMinusOneIsInvalid
@@ -333,6 +413,9 @@ namespace Wasmtime
         }
 
         private readonly Handle handle;
+        private readonly object executionSync = new();
+        private int executionOwnerThreadId;
+        private int executionDepth;
 
         private object? data;
 
