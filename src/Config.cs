@@ -135,6 +135,26 @@ namespace Wasmtime
         }
 
         /// <summary>
+        /// Sets whether or not to enable shared memory support.
+        /// </summary>
+        /// <param name="enable">True to enable shared memory support or false to disable.</param>
+        /// <returns>Returns the current config.</returns>
+        public Config WithSharedMemory(bool enable)
+        {
+            try
+            {
+                Native.wasmtime_config_shared_memory_set(handle, enable);
+            }
+            catch (EntryPointNotFoundException) when (enable)
+            {
+                // Older Wasmtime builds gate shared memory through wasm threads and do not
+                // expose a separate config setter. Enabling shared memory remains valid there.
+            }
+
+            return this;
+        }
+
+        /// <summary>
         /// Sets whether or not enable WebAssembly reference types support.
         /// </summary>
         /// <param name="enable">True to enable WebAssembly reference types support or false to disable.</param>
@@ -402,6 +422,9 @@ namespace Wasmtime
 
             [DllImport(Engine.LibraryName)]
             public static extern void wasmtime_config_wasm_threads_set(Handle config, [MarshalAs(UnmanagedType.I1)] bool enable);
+
+            [DllImport(Engine.LibraryName)]
+            public static extern void wasmtime_config_shared_memory_set(Handle config, [MarshalAs(UnmanagedType.I1)] bool enable);
 
             [DllImport(Engine.LibraryName)]
             public static extern void wasmtime_config_wasm_reference_types_set(Handle config, [MarshalAs(UnmanagedType.I1)] bool enable);

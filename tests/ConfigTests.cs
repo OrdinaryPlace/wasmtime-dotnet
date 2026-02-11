@@ -105,6 +105,22 @@ namespace Wasmtime.Tests
         }
 
         [Fact]
+        public void ItSetsSharedMemory()
+        {
+            var config = new Config();
+            config.WithWasmThreads(true);
+            config.WithSharedMemory(true);
+
+            using var engine = new Engine(config);
+            using var module = Module.FromTextFile(engine, Path.Combine("Modules", "SharedMemoryExports.wat"));
+            using var store = new Store(engine);
+            using var linker = new Linker(engine);
+
+            var instance = linker.Instantiate(store, module);
+            instance.GetSharedMemory("mem").Should().NotBeNull();
+        }
+
+        [Fact]
         public void ItSetsSIMD()
         {
             var config = new Config();
