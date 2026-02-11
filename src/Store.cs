@@ -143,7 +143,6 @@ namespace Wasmtime
 
             handle = new Handle(Native.wasmtime_store_new(engine.NativeHandle, (IntPtr)storeHandle, Finalizer));
 
-            contextHandle = Native.wasmtime_store_context(NativeHandle);
         }
 
         /// <summary>
@@ -297,7 +296,7 @@ namespace Wasmtime
                     throw new ObjectDisposedException(typeof(Store).FullName);
                 }
 
-                return new StoreContext(contextHandle);
+                return new StoreContext(Native.wasmtime_store_context(NativeHandle));
             }
         }
 
@@ -333,7 +332,6 @@ namespace Wasmtime
             public static extern void wasmtime_store_limiter(Handle store, long memory_size, long table_elements, long instances, long tables, long memories);
         }
 
-        private readonly IntPtr contextHandle;
         private readonly Handle handle;
 
         private object? data;
