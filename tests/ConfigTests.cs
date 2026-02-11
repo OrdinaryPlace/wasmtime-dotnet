@@ -99,6 +99,7 @@ namespace Wasmtime.Tests
         {
             var config = new Config();
             config.WithWasmThreads(true);
+            config.WithSharedMemory(true);
 
             using var engine = new Engine(config);
             using var module = Module.FromTextFile(engine, Path.Combine("Modules", "SharedMemory.wat"));
@@ -177,6 +178,7 @@ namespace Wasmtime.Tests
             Assert.Throws<ObjectDisposedException>(() => config.WithBulkMemory(true));
             Assert.Throws<ObjectDisposedException>(() => config.WithCacheConfig(null));
             Assert.Throws<ObjectDisposedException>(() => config.WithEpochInterruption(true));
+            Assert.Throws<ObjectDisposedException>(() => config.WithSharedMemory(true));
         }
     }
 }

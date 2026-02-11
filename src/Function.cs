@@ -380,6 +380,7 @@ namespace Wasmtime
                 throw new ArgumentNullException(nameof(store));
             }
 
+            using var executionScope = store.EnterExecutionScope();
             var context = store.Context;
 
             IntPtr error;
@@ -425,6 +426,12 @@ namespace Wasmtime
                 throw new InvalidOperationException("Cannot invoke a null function reference.");
             }
 
+            if (store is null)
+            {
+                throw new ArgumentNullException(nameof(store));
+            }
+
+            using var executionScope = store.EnterExecutionScope();
             IntPtr error;
             IntPtr trap;
             fixed (ValueRaw* argsAndResultsPtr = argumentsAndResults)

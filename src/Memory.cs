@@ -584,6 +584,8 @@ namespace Wasmtime
 
         internal static class Native
         {
+            private const byte DefaultWasmPageSizeLog2 = 16;
+
             [DllImport(Engine.LibraryName)]
             public static extern IntPtr wasmtime_memory_new(IntPtr context, IntPtr typeHandle, out ExternMemory memory);
 
@@ -602,8 +604,33 @@ namespace Wasmtime
             [DllImport(Engine.LibraryName)]
             public static extern IntPtr wasmtime_memory_type(IntPtr context, in ExternMemory memory);
 
-            [DllImport(Engine.LibraryName)]
-            public static extern IntPtr wasmtime_memorytype_new(ulong min, [MarshalAs(UnmanagedType.I1)] bool max_present, ulong max, [MarshalAs(UnmanagedType.I1)] bool is_64, [MarshalAs(UnmanagedType.I1)] bool shared);
+            public static IntPtr wasmtime_memorytype_new(ulong min, [MarshalAs(UnmanagedType.I1)] bool max_present, ulong max, [MarshalAs(UnmanagedType.I1)] bool is_64, [MarshalAs(UnmanagedType.I1)] bool shared)
+            {
+                var error = wasmtime_memorytype_new_native(
+                    min,
+                    max_present,
+                    max,
+                    is_64,
+                    shared,
+                    DefaultWasmPageSizeLog2,
+                    out var typeHandle);
+                if (error != IntPtr.Zero)
+                {
+                    throw WasmtimeException.FromOwnedError(error);
+                }
+
+                return typeHandle;
+            }
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_memorytype_new")]
+            private static extern IntPtr wasmtime_memorytype_new_native(
+                ulong min,
+                [MarshalAs(UnmanagedType.I1)] bool max_present,
+                ulong max,
+                [MarshalAs(UnmanagedType.I1)] bool is_64,
+                [MarshalAs(UnmanagedType.I1)] bool shared,
+                byte page_size_log2,
+                out IntPtr ret);
 
             [DllImport(Engine.LibraryName)]
             public static extern ulong wasmtime_memorytype_minimum(IntPtr type);

@@ -72,3 +72,31 @@ $ dotnet run
 ```
 
 This should print `Hello from C#!`.
+
+## Threading Model
+
+Wasmtime's unmanaged C API allows moving a `Store` between threads, but does not
+allow using the same `Store` concurrently from multiple threads.
+
+For true parallel execution:
+
+1. Share one `Engine` (and compiled `Module`) across threads.
+2. Create one `Store` per worker thread.
+3. Coordinate between stores with `SharedMemory` plus host message passing.
+
+```csharp
+using var config = new Config()
+    .WithWasmThreads(true)
+    .WithSharedMemory(true);
+using var engine = new Engine(config);
+using var module = Module.FromText(engine, "m", "(module (import \"env\" \"mem\" (memory 1 1 shared)))");
+using var sharedMemory = new SharedMemory(engine, 1, 1);
+
+using var producerStore = new Store(engine);
+using var consumerStore = new Store(engine);
+using var producerLinker = new Linker(engine);
+using var consumerLinker = new Linker(engine);
+
+producerLinker.Define("env", "mem", sharedMemory, producerStore);
+consumerLinker.Define("env", "mem", sharedMemory, consumerStore);
+```

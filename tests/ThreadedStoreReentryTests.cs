@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Concurrent;
 using System.Threading;
 using FluentAssertions;
 using Wasmtime;
@@ -10,7 +11,7 @@ namespace Wasmtime.Tests
     public class ThreadedStoreReentryTests
     {
         [Fact]
-        public void ItCanRunIndirectStartRoutineFromWorkerThreadWhileMainThreadWaitsInHostCallback()
+        public void ItThrowsManagedErrorForConcurrentStoreAccessFromWorkerThread()
         {
             using var engine = new Engine();
             using var module = Module.FromText(
@@ -94,9 +95,11 @@ namespace Wasmtime.Tests
 
             linker.DefineFunction("env", "wait_for_signal", () =>
             {
-                signaled.Wait(TimeSpan.FromSeconds(3))
+                WaitHandle.WaitAny(
+                    [signaled.WaitHandle, workerCompleted.WaitHandle],
+                    TimeSpan.FromSeconds(3))
                     .Should()
-                    .BeTrue("worker thread should re-enter wasm and signal completion");
+                    .NotBe(WaitHandle.WaitTimeout, "worker thread should either signal or report a managed failure");
             });
 
             linker.DefineFunction("env", "signal", () =>
@@ -114,8 +117,124 @@ namespace Wasmtime.Tests
 
             workerCompleted.Wait(TimeSpan.FromSeconds(3))
                 .Should()
-                .BeTrue("worker thread should complete after signaling");
-            workerException.Should().BeNull();
+                .BeTrue("worker thread should complete");
+
+            workerException
+                .Should()
+                .BeOfType<InvalidOperationException>()
+                .Which.Message
+                .Should()
+                .Contain("not supported");
+        }
+
+        [Fact]
+        public void ItSupportsThreadedExecutionWithOneStorePerThread()
+        {
+            using var config = new Config()
+                .WithWasmThreads(true)
+                .WithSharedMemory(true);
+            using var engine = new Engine(config);
+            using var module = Module.FromText(
+                engine,
+                "threaded-store-per-thread",
+                """
+                (module
+                  (import "env" "mem" (memory 1 1 shared))
+
+                  (func (export "write") (param $value i32)
+                    i32.const 0
+                    local.get $value
+                    i32.store)
+
+                  (func (export "read") (result i32)
+                    i32.const 0
+                    i32.load))
+                """);
+
+            using var sharedMemory = new SharedMemory(engine, 1, 1);
+            using var producerStore = new Store(engine);
+            using var consumerStore = new Store(engine);
+            using var producerLinker = new Linker(engine);
+            using var consumerLinker = new Linker(engine);
+
+            producerLinker.Define("env", "mem", sharedMemory, producerStore);
+            consumerLinker.Define("env", "mem", sharedMemory, consumerStore);
+
+            var producerInstance = producerLinker.Instantiate(producerStore, module);
+            var consumerInstance = consumerLinker.Instantiate(consumerStore, module);
+
+            var write = producerInstance.GetAction<int>("write");
+            var read = consumerInstance.GetFunction<int>("read");
+            write.Should().NotBeNull();
+            read.Should().NotBeNull();
+
+            using var messageQueue = new BlockingCollection<int>(boundedCapacity: 1);
+            using var producerCompleted = new ManualResetEventSlim(false);
+            using var consumerCompleted = new ManualResetEventSlim(false);
+
+            Exception? producerException = null;
+            Exception? consumerException = null;
+            var observedValue = int.MinValue;
+
+            var producerThread = new Thread(() =>
+            {
+                try
+                {
+                    const int payload = 0x1234_5678;
+                    write!(payload);
+                    messageQueue.Add(payload);
+                }
+                catch (Exception ex)
+                {
+                    producerException = ex;
+                }
+                finally
+                {
+                    messageQueue.CompleteAdding();
+                    producerCompleted.Set();
+                }
+            })
+            {
+                IsBackground = true,
+                Name = "wasmtime-producer-store-thread"
+            };
+
+            var consumerThread = new Thread(() =>
+            {
+                try
+                {
+                    var expected = messageQueue.Take();
+                    observedValue = read!();
+                    observedValue.Should().Be(expected);
+                }
+                catch (Exception ex)
+                {
+                    consumerException = ex;
+                }
+                finally
+                {
+                    consumerCompleted.Set();
+                }
+            })
+            {
+                IsBackground = true,
+                Name = "wasmtime-consumer-store-thread"
+            };
+
+            consumerThread.Start();
+            producerThread.Start();
+
+            producerCompleted.Wait(TimeSpan.FromSeconds(3))
+                .Should()
+                .BeTrue("producer thread should finish");
+
+            consumerCompleted.Wait(TimeSpan.FromSeconds(3))
+                .Should()
+                .BeTrue("consumer thread should finish");
+
+            producerException.Should().BeNull();
+            consumerException.Should().BeNull();
+            observedValue.Should().Be(0x1234_5678);
         }
     }
 }

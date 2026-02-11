@@ -257,6 +257,7 @@ namespace Wasmtime
                 throw new ArgumentNullException(nameof(module));
             }
 
+            using var executionScope = store.EnterExecutionScope();
             var error = Native.wasmtime_linker_instantiate(handle, store.Context.handle, module.NativeHandle, out var instance, out var trap);
             GC.KeepAlive(store);
 

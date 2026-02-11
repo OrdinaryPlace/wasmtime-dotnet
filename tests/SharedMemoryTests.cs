@@ -13,7 +13,8 @@ namespace Wasmtime.Tests
         {
             return new Config()
                 .WithMemory64(true)
-                .WithWasmThreads(true);
+                .WithWasmThreads(true)
+                .WithSharedMemory(true);
         }
     }
 
@@ -65,7 +66,8 @@ namespace Wasmtime.Tests
         {
             return new Config()
                 .WithMemory64(true)
-                .WithWasmThreads(true);
+                .WithWasmThreads(true)
+                .WithSharedMemory(true);
         }
     }
 

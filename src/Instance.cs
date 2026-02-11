@@ -34,6 +34,7 @@ namespace Wasmtime
             }
 
             _store = store;
+            using var executionScope = store.EnterExecutionScope();
 
             unsafe
             {
