@@ -46,7 +46,7 @@ jobs:
     - name: Clear package cache
       run: dotnet clean Wasmtime.sln && dotnet nuget locals all --clear
     - name: Enable development builds for the main branch
-      if: github.ref == 'refs/heads/main' || github.base_ref == 'main'
+      if: github.repository == 'bytecodealliance/wasmtime-dotnet' && (github.ref == 'refs/heads/main' || github.base_ref == 'main')
       shell: bash
       run: |
         echo "DevBuild=true" >> $GITHUB_ENV
