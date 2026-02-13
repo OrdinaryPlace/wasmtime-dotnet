@@ -108,6 +108,29 @@ namespace Wasmtime
         }
 
         /// <summary>
+        /// Sets whether or not to enable asynchronous WebAssembly execution support.
+        /// </summary>
+        /// <param name="enable">True to enable asynchronous execution support or false to disable.</param>
+        /// <returns>Returns the current config.</returns>
+        public Config WithAsyncSupport(bool enable)
+        {
+            Native.wasmtime_config_async_support_set(NativeHandle, enable);
+            asyncSupportEnabled = enable;
+            return this;
+        }
+
+        /// <summary>
+        /// Configures the stack size used for asynchronous WebAssembly execution.
+        /// </summary>
+        /// <param name="size">The async stack size in bytes.</param>
+        /// <returns>Returns the current config.</returns>
+        public Config WithAsyncStackSize(ulong size)
+        {
+            Native.wasmtime_config_async_stack_size_set(NativeHandle, size);
+            return this;
+        }
+
+        /// <summary>
         /// Sets the maximum WebAssembly stack size.
         /// </summary>
         /// <param name="size">The maximum WebAssembly stack size, in bytes.</param>
@@ -141,7 +164,7 @@ namespace Wasmtime
         /// <returns>Returns the current config.</returns>
         public Config WithSharedMemory(bool enable)
         {
-            Native.wasmtime_config_shared_memory_set(handle, enable);
+            Native.wasmtime_config_shared_memory_set(NativeHandle, enable);
             return this;
         }
 
@@ -376,6 +399,8 @@ namespace Wasmtime
             }
         }
 
+        internal bool IsAsyncSupportEnabled => asyncSupportEnabled;
+
         internal class Handle : SafeHandleZeroOrMinusOneIsInvalid
         {
             public Handle(IntPtr handle)
@@ -407,6 +432,36 @@ namespace Wasmtime
 
             [DllImport(Engine.LibraryName)]
             public static extern void wasmtime_config_consume_fuel_set(Handle config, [MarshalAs(UnmanagedType.I1)] bool enable);
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_config_async_support_set")]
+            private static extern void wasmtime_config_async_support_set_native(Handle config, [MarshalAs(UnmanagedType.I1)] bool enable);
+
+            public static void wasmtime_config_async_support_set(Handle config, [MarshalAs(UnmanagedType.I1)] bool enable)
+            {
+                try
+                {
+                    wasmtime_config_async_support_set_native(config, enable);
+                }
+                catch (EntryPointNotFoundException ex)
+                {
+                    throw new NotSupportedException("Async support is not available in the loaded Wasmtime runtime.", ex);
+                }
+            }
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_config_async_stack_size_set")]
+            private static extern void wasmtime_config_async_stack_size_set_native(Handle config, ulong size);
+
+            public static void wasmtime_config_async_stack_size_set(Handle config, ulong size)
+            {
+                try
+                {
+                    wasmtime_config_async_stack_size_set_native(config, size);
+                }
+                catch (EntryPointNotFoundException ex)
+                {
+                    throw new NotSupportedException("Async support is not available in the loaded Wasmtime runtime.", ex);
+                }
+            }
 
             [DllImport(Engine.LibraryName)]
             public static extern void wasmtime_config_max_wasm_stack_set(Handle config, nuint size);
@@ -483,5 +538,6 @@ namespace Wasmtime
         }
 
         private readonly Handle handle;
+        private bool asyncSupportEnabled;
     }
 }

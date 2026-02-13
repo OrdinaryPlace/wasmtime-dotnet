@@ -217,7 +217,13 @@ namespace Wasmtime
     {
         public void Release(Store store)
         {
-            Native.wasmtime_val_unroot(store.Context.handle, this);
+            Release(store, allowDuringAsyncExecution: false);
+        }
+
+        internal void Release(Store store, bool allowDuringAsyncExecution)
+        {
+            var context = allowDuringAsyncExecution ? store.ContextForAsyncExecution : store.Context;
+            Native.wasmtime_val_unroot(context.handle, this);
             GC.KeepAlive(store);
         }
 
@@ -310,13 +316,18 @@ namespace Wasmtime
 
         public ValueBox ToValueBox(Store store)
         {
+            return ToValueBox(store, allowDuringAsyncExecution: false);
+        }
+
+        internal ValueBox ToValueBox(Store store, bool allowDuringAsyncExecution)
+        {
             if (kind != ValueKind.ExternRef)
             {
                 return new ValueBox(kind, of);
             }
             else
             {
-                return new ValueBox(ResolveExternRef(store));
+                return new ValueBox(ResolveExternRef(store, allowDuringAsyncExecution));
             }
         }
 
@@ -423,6 +434,11 @@ namespace Wasmtime
 
         public object? ToObject(Store store)
         {
+            return ToObject(store, allowDuringAsyncExecution: false);
+        }
+
+        internal object? ToObject(Store store, bool allowDuringAsyncExecution)
+        {
             switch (kind)
             {
                 case ValueKind.Int32:
@@ -441,7 +457,7 @@ namespace Wasmtime
                     return of.v128;
 
                 case ValueKind.ExternRef:
-                    return ResolveExternRef(store);
+                    return ResolveExternRef(store, allowDuringAsyncExecution);
 
                 case ValueKind.FuncRef:
                     return store.GetCachedExtern(of.funcref);
@@ -451,13 +467,14 @@ namespace Wasmtime
             }
         }
 
-        private object? ResolveExternRef(Store store)
+        private object? ResolveExternRef(Store store, bool allowDuringAsyncExecution)
         {
             if (of.externref.IsNull())
             {
                 return null;
             }
-            var data = Native.wasmtime_externref_data(store.Context.handle, of.externref);
+            var context = allowDuringAsyncExecution ? store.ContextForAsyncExecution : store.Context;
+            var data = Native.wasmtime_externref_data(context.handle, of.externref);
             if (data == IntPtr.Zero)
             {
                 return null;

@@ -82,6 +82,7 @@ namespace Wasmtime
 
             try
             {
+                using var executionScope = store.EnterExecutionScope();
                 var error = Native.wasmtime_table_new(store.Context.handle, tableType, in value, out this.table);
                 GC.KeepAlive(store);
 
@@ -119,6 +120,7 @@ namespace Wasmtime
         /// <returns>Returns the table element.</returns>
         public object? GetElement(uint index)
         {
+            using var executionScope = store.EnterExecutionScope();
             var context = store.Context;
             if (!Native.wasmtime_table_get(context.handle, this.table, index, out var v))
             {
@@ -149,6 +151,7 @@ namespace Wasmtime
 
             try
             {
+                using var executionScope = store.EnterExecutionScope();
                 var error = Native.wasmtime_table_set(store.Context.handle, this.table, index, v);
                 GC.KeepAlive(store);
 
@@ -169,6 +172,7 @@ namespace Wasmtime
         /// <value>Returns the current size of the table.</value>
         public ulong GetSize()
         {
+            using var executionScope = store.EnterExecutionScope();
             var result = Native.wasmtime_table_size(store.Context.handle, this.table);
             GC.KeepAlive(store);
             return result;
@@ -186,6 +190,7 @@ namespace Wasmtime
 
             try
             {
+                using var executionScope = store.EnterExecutionScope();
                 var error = Native.wasmtime_table_grow(store.Context.handle, this.table, delta, v, out var prev);
                 GC.KeepAlive(store);
 
@@ -207,6 +212,7 @@ namespace Wasmtime
             this.store = store;
             this.table = table;
 
+            using var executionScope = store.EnterExecutionScope();
             using var type = new TypeHandle(Native.wasmtime_table_type(store.Context.handle, this.table));
             GC.KeepAlive(store);
 

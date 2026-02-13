@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
 
 namespace Wasmtime
@@ -257,6 +259,12 @@ namespace Wasmtime
                 throw new ArgumentNullException(nameof(module));
             }
 
+            if (store.IsAsyncSupportEnabled)
+            {
+                throw new InvalidOperationException(
+                    "This Store was created with async support enabled. Use Linker.InstantiateAsync.");
+            }
+
             using var executionScope = store.EnterExecutionScope();
             var error = Native.wasmtime_linker_instantiate(handle, store.Context.handle, module.NativeHandle, out var instance, out var trap);
             GC.KeepAlive(store);
@@ -272,6 +280,105 @@ namespace Wasmtime
             }
 
             return new Instance(store, instance);
+        }
+
+        /// <summary>
+        /// Instantiates a module with imports from items defined in the linker using async execution.
+        /// </summary>
+        /// <param name="store">The store to instantiate in.</param>
+        /// <param name="module">The module to instantiate.</param>
+        /// <param name="cancellationToken">A cancellation token used while polling the instantiation future.</param>
+        /// <returns>Returns the new instance.</returns>
+        public async Task<Instance> InstantiateAsync(Store store, Module module, CancellationToken cancellationToken = default)
+        {
+            if (store is null)
+            {
+                throw new ArgumentNullException(nameof(store));
+            }
+
+            if (module is null)
+            {
+                throw new ArgumentNullException(nameof(module));
+            }
+
+            if (!store.IsAsyncSupportEnabled)
+            {
+                return Instantiate(store, module);
+            }
+
+            IntPtr instanceSlot = IntPtr.Zero;
+            IntPtr trapSlot = IntPtr.Zero;
+            IntPtr errorSlot = IntPtr.Zero;
+            IntPtr futureHandle = IntPtr.Zero;
+            Store.AsyncExecutionLease? asyncExecutionLease = null;
+
+            try
+            {
+                asyncExecutionLease = store.EnterAsyncExecutionLease();
+
+                instanceSlot = Marshal.AllocHGlobal(Marshal.SizeOf<ExternInstance>());
+                trapSlot = Marshal.AllocHGlobal(IntPtr.Size);
+                errorSlot = Marshal.AllocHGlobal(IntPtr.Size);
+
+                Marshal.StructureToPtr(default(ExternInstance), instanceSlot, false);
+
+                Marshal.WriteIntPtr(trapSlot, IntPtr.Zero);
+                Marshal.WriteIntPtr(errorSlot, IntPtr.Zero);
+
+                futureHandle = StartInstantiateAsyncFuture(store, module, instanceSlot, trapSlot, errorSlot);
+
+                if (futureHandle == IntPtr.Zero)
+                {
+                    ThrowIfErrorOrTrap(errorSlot, trapSlot);
+                    throw new WasmtimeException("Failed to create an async instantiation future.");
+                }
+
+                while (true)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    var done = PollAsyncFuture(store, futureHandle);
+
+                    if (done)
+                    {
+                        break;
+                    }
+
+                    await Task.Yield();
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+                ThrowIfErrorOrTrap(errorSlot, trapSlot);
+
+                var instance = Marshal.PtrToStructure<ExternInstance>(instanceSlot);
+                return new Instance(store, instance);
+            }
+            finally
+            {
+                if (futureHandle != IntPtr.Zero)
+                {
+                    Native.wasmtime_call_future_delete(futureHandle);
+                }
+
+                DeletePendingErrorOrTrap(errorSlot, trapSlot);
+
+                if (errorSlot != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(errorSlot);
+                }
+
+                if (trapSlot != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(trapSlot);
+                }
+
+                if (instanceSlot != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(instanceSlot);
+                }
+
+                asyncExecutionLease?.Dispose();
+            }
         }
 
         /// <summary>
@@ -534,6 +641,77 @@ namespace Wasmtime
             }
         }
 
+        private static void ThrowIfErrorOrTrap(IntPtr errorSlot, IntPtr trapSlot)
+        {
+            var error = ReadAndClearOwnedPointer(errorSlot);
+            if (error != IntPtr.Zero)
+            {
+                throw WasmtimeException.FromOwnedError(error);
+            }
+
+            var trap = ReadAndClearOwnedPointer(trapSlot);
+            if (trap != IntPtr.Zero)
+            {
+                throw TrapException.FromOwnedTrap(trap);
+            }
+        }
+
+        private static void DeletePendingErrorOrTrap(IntPtr errorSlot, IntPtr trapSlot)
+        {
+            var error = ReadAndClearOwnedPointer(errorSlot);
+            if (error != IntPtr.Zero)
+            {
+                WasmtimeException.Native.wasmtime_error_delete(error);
+            }
+
+            var trap = ReadAndClearOwnedPointer(trapSlot);
+            if (trap != IntPtr.Zero)
+            {
+                TrapException.Native.wasm_trap_delete(trap);
+            }
+        }
+
+        private static IntPtr ReadAndClearOwnedPointer(IntPtr slot)
+        {
+            if (slot == IntPtr.Zero)
+            {
+                return IntPtr.Zero;
+            }
+
+            var value = Marshal.ReadIntPtr(slot);
+            if (value != IntPtr.Zero)
+            {
+                Marshal.WriteIntPtr(slot, IntPtr.Zero);
+            }
+
+            return value;
+        }
+
+        private IntPtr StartInstantiateAsyncFuture(Store store, Module module, IntPtr instanceSlot, IntPtr trapSlot, IntPtr errorSlot)
+        {
+            using var executionScope = store.EnterExecutionScope(allowDuringAsyncExecution: true);
+            var context = store.ContextForAsyncExecution;
+            var future = Native.wasmtime_linker_instantiate_async(
+                handle,
+                context.handle,
+                module.NativeHandle,
+                instanceSlot,
+                trapSlot,
+                errorSlot
+            );
+
+            GC.KeepAlive(store);
+            return future;
+        }
+
+        private static bool PollAsyncFuture(Store store, IntPtr futureHandle)
+        {
+            using var executionScope = store.EnterExecutionScope(allowDuringAsyncExecution: true);
+            var done = Native.wasmtime_call_future_poll(futureHandle);
+            GC.KeepAlive(store);
+            return done;
+        }
+
         internal class Handle : SafeHandleZeroOrMinusOneIsInvalid
         {
             public Handle(IntPtr handle)
@@ -577,6 +755,52 @@ namespace Wasmtime
 
             [DllImport(Engine.LibraryName)]
             public static extern IntPtr wasmtime_linker_instantiate(Handle linker, IntPtr context, Module.Handle module, out ExternInstance instance, out IntPtr trap);
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_linker_instantiate_async")]
+            private static extern IntPtr wasmtime_linker_instantiate_async_native(Handle linker, IntPtr context, Module.Handle module, IntPtr instance, IntPtr trapRet, IntPtr errorRet);
+
+            public static IntPtr wasmtime_linker_instantiate_async(Handle linker, IntPtr context, Module.Handle module, IntPtr instance, IntPtr trapRet, IntPtr errorRet)
+            {
+                try
+                {
+                    return wasmtime_linker_instantiate_async_native(linker, context, module, instance, trapRet, errorRet);
+                }
+                catch (EntryPointNotFoundException ex)
+                {
+                    throw new NotSupportedException("Async support is not available in the loaded Wasmtime runtime.", ex);
+                }
+            }
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_call_future_poll")]
+            [return: MarshalAs(UnmanagedType.I1)]
+            private static extern bool wasmtime_call_future_poll_native(IntPtr future);
+
+            public static bool wasmtime_call_future_poll(IntPtr future)
+            {
+                try
+                {
+                    return wasmtime_call_future_poll_native(future);
+                }
+                catch (EntryPointNotFoundException ex)
+                {
+                    throw new NotSupportedException("Async support is not available in the loaded Wasmtime runtime.", ex);
+                }
+            }
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_call_future_delete")]
+            private static extern void wasmtime_call_future_delete_native(IntPtr future);
+
+            public static void wasmtime_call_future_delete(IntPtr future)
+            {
+                try
+                {
+                    wasmtime_call_future_delete_native(future);
+                }
+                catch (EntryPointNotFoundException ex)
+                {
+                    throw new NotSupportedException("Async support is not available in the loaded Wasmtime runtime.", ex);
+                }
+            }
 
             [DllImport(Engine.LibraryName)]
             public static unsafe extern IntPtr wasmtime_linker_module(Handle linker, IntPtr context, byte* name, nuint len, Module.Handle module);

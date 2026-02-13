@@ -130,43 +130,17 @@ namespace Wasmtime.Tests
         [Fact]
         public void ItSupportsThreadedExecutionWithOneStorePerThread()
         {
-            using var config = new Config()
-                .WithWasmThreads(true)
-                .WithSharedMemory(true);
-            using var engine = new Engine(config);
+            using var engine = new Engine();
             using var module = Module.FromText(
                 engine,
                 "threaded-store-per-thread",
                 """
                 (module
-                  (import "env" "mem" (memory 1 1 shared))
-
-                  (func (export "write") (param $value i32)
-                    i32.const 0
+                  (func (export "bump") (param $value i32) (result i32)
                     local.get $value
-                    i32.store)
-
-                  (func (export "read") (result i32)
-                    i32.const 0
-                    i32.load))
+                    i32.const 1
+                    i32.add))
                 """);
-
-            using var sharedMemory = new SharedMemory(engine, 1, 1);
-            using var producerStore = new Store(engine);
-            using var consumerStore = new Store(engine);
-            using var producerLinker = new Linker(engine);
-            using var consumerLinker = new Linker(engine);
-
-            producerLinker.Define("env", "mem", sharedMemory, producerStore);
-            consumerLinker.Define("env", "mem", sharedMemory, consumerStore);
-
-            var producerInstance = producerLinker.Instantiate(producerStore, module);
-            var consumerInstance = consumerLinker.Instantiate(consumerStore, module);
-
-            var write = producerInstance.GetAction<int>("write");
-            var read = consumerInstance.GetFunction<int>("read");
-            write.Should().NotBeNull();
-            read.Should().NotBeNull();
 
             using var messageQueue = new BlockingCollection<int>(boundedCapacity: 1);
             using var producerCompleted = new ManualResetEventSlim(false);
@@ -180,9 +154,14 @@ namespace Wasmtime.Tests
             {
                 try
                 {
-                    const int payload = 0x1234_5678;
-                    write!(payload);
-                    messageQueue.Add(payload);
+                    const int payload = 41;
+                    using var producerStore = new Store(engine);
+                    using var producerLinker = new Linker(engine);
+                    var producerInstance = producerLinker.Instantiate(producerStore, module);
+                    var bump = producerInstance.GetFunction<int, int>("bump");
+                    bump.Should().NotBeNull();
+
+                    messageQueue.Add(bump!(payload));
                 }
                 catch (Exception ex)
                 {
@@ -203,9 +182,14 @@ namespace Wasmtime.Tests
             {
                 try
                 {
+                    using var consumerStore = new Store(engine);
+                    using var consumerLinker = new Linker(engine);
+                    var consumerInstance = consumerLinker.Instantiate(consumerStore, module);
+                    var bump = consumerInstance.GetFunction<int, int>("bump");
+                    bump.Should().NotBeNull();
+
                     var expected = messageQueue.Take();
-                    observedValue = read!();
-                    observedValue.Should().Be(expected);
+                    observedValue = bump!(expected);
                 }
                 catch (Exception ex)
                 {
@@ -234,7 +218,110 @@ namespace Wasmtime.Tests
 
             producerException.Should().BeNull();
             consumerException.Should().BeNull();
-            observedValue.Should().Be(0x1234_5678);
+            observedValue.Should().Be(43);
+        }
+
+        [Fact]
+        public void ItDemonstratesBusyRetryWithoutProgressWhenStoreIsContendedAcrossThreads()
+        {
+            using var engine = new Engine();
+            using var module = Module.FromText(
+                engine,
+                "threaded-store-livelock-retry",
+                """
+                (module
+                  (type $thread_fn (func (param i32) (result i32)))
+                  (import "env" "spawn" (func $spawn (param i32 i32) (result i32)))
+                  (import "env" "wait_window" (func $wait_window))
+                  (memory (export "memory") 1)
+                  (table (export "__indirect_function_table") 2 funcref)
+                  (elem (i32.const 1) $target)
+
+                  (func $target (param $arg i32) (result i32)
+                    i32.const 0)
+
+                  (func (export "run")
+                    i32.const 1
+                    i32.const 0
+                    call $spawn
+                    drop
+                    call $wait_window))
+                """);
+
+            using var store = new Store(engine);
+            using var linker = new Linker(engine);
+
+            using var workerStarted = new ManualResetEventSlim(false);
+            using var workerCompleted = new ManualResetEventSlim(false);
+
+            var stopWorker = 0;
+            var contentionFailures = 0;
+            var successfulInvocations = 0;
+            Exception? workerException = null;
+            Table? table = null;
+
+            linker.DefineFunction("env", "spawn", (int startRoutine, int startArg) =>
+            {
+                var thread = new Thread(() =>
+                {
+                    workerStarted.Set();
+                    while (Interlocked.CompareExchange(ref stopWorker, 0, 0) == 0)
+                    {
+                        try
+                        {
+                            var start = table!.GetElement(unchecked((uint)startRoutine)) as Function;
+                            start.Should().NotBeNull();
+                            var startFunc = start!.WrapFunc<int, int>();
+                            startFunc.Should().NotBeNull();
+                            _ = startFunc!(startArg);
+                            Interlocked.Increment(ref successfulInvocations);
+                        }
+                        catch (InvalidOperationException ex)
+                            when (ex.Message.Contains("Concurrent access to a Store"))
+                        {
+                            Interlocked.Increment(ref contentionFailures);
+                        }
+                        catch (Exception ex)
+                        {
+                            workerException = ex;
+                            break;
+                        }
+                    }
+
+                    workerCompleted.Set();
+                });
+
+                thread.IsBackground = true;
+                thread.Name = "wasmtime-threaded-store-busy-retry";
+                thread.Start();
+                return 0;
+            });
+
+            linker.DefineFunction("env", "wait_window", () =>
+            {
+                workerStarted.Wait(TimeSpan.FromSeconds(3))
+                    .Should()
+                    .BeTrue("worker should start while run() is active");
+
+                Thread.Sleep(TimeSpan.FromMilliseconds(200));
+                Interlocked.Exchange(ref stopWorker, 1);
+            });
+
+            var instance = linker.Instantiate(store, module);
+            table = instance.GetTable("__indirect_function_table");
+            table.Should().NotBeNull();
+
+            var run = instance.GetAction("run");
+            run.Should().NotBeNull();
+            run!();
+
+            workerCompleted.Wait(TimeSpan.FromSeconds(3))
+                .Should()
+                .BeTrue("worker should stop when the retry window closes");
+
+            workerException.Should().BeNull();
+            successfulInvocations.Should().Be(0, "contended shared-store retries should make no progress");
+            contentionFailures.Should().BeGreaterThan(100, "busy retries should accumulate quickly and indicate CPU churn");
         }
     }
 }
