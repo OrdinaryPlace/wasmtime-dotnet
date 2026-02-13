@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.Win32.SafeHandles;
 
 namespace Wasmtime
@@ -81,6 +82,32 @@ namespace Wasmtime
             Native.wasmtime_context_set_epoch_deadline(handle, deadline);
         }
 
+        /// <summary>
+        /// Configures how often async WebAssembly execution should yield based on fuel usage.
+        /// </summary>
+        /// <param name="interval">The amount of fuel to consume between yields. Use 0 to disable yielding.</param>
+        public void SetFuelAsyncYieldInterval(ulong interval)
+        {
+            var error = Native.wasmtime_context_fuel_async_yield_interval(handle, interval);
+            if (error != IntPtr.Zero)
+            {
+                throw WasmtimeException.FromOwnedError(error);
+            }
+        }
+
+        /// <summary>
+        /// Configures epoch-deadline expiration to yield and then update the deadline.
+        /// </summary>
+        /// <param name="deadlineDelta">The deadline delta to apply after each yield.</param>
+        public void SetEpochDeadlineAsyncYieldAndUpdate(ulong deadlineDelta)
+        {
+            var error = Native.wasmtime_context_epoch_deadline_async_yield_and_update(handle, deadlineDelta);
+            if (error != IntPtr.Zero)
+            {
+                throw WasmtimeException.FromOwnedError(error);
+            }
+        }
+
         private static class Native
         {
             [DllImport(Engine.LibraryName)]
@@ -97,6 +124,36 @@ namespace Wasmtime
 
             [DllImport(Engine.LibraryName)]
             public static extern void wasmtime_context_set_epoch_deadline(IntPtr handle, ulong ticksBeyondCurrent);
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_context_fuel_async_yield_interval")]
+            private static extern IntPtr wasmtime_context_fuel_async_yield_interval_native(IntPtr handle, ulong interval);
+
+            public static IntPtr wasmtime_context_fuel_async_yield_interval(IntPtr handle, ulong interval)
+            {
+                try
+                {
+                    return wasmtime_context_fuel_async_yield_interval_native(handle, interval);
+                }
+                catch (EntryPointNotFoundException ex)
+                {
+                    throw new NotSupportedException("Async support is not available in the loaded Wasmtime runtime.", ex);
+                }
+            }
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_context_epoch_deadline_async_yield_and_update")]
+            private static extern IntPtr wasmtime_context_epoch_deadline_async_yield_and_update_native(IntPtr handle, ulong delta);
+
+            public static IntPtr wasmtime_context_epoch_deadline_async_yield_and_update(IntPtr handle, ulong delta)
+            {
+                try
+                {
+                    return wasmtime_context_epoch_deadline_async_yield_and_update_native(handle, delta);
+                }
+                catch (EntryPointNotFoundException ex)
+                {
+                    throw new NotSupportedException("Async support is not available in the loaded Wasmtime runtime.", ex);
+                }
+            }
 
             [DllImport(Engine.LibraryName)]
             public static extern IntPtr wasmtime_context_get_data(IntPtr handle);
@@ -132,6 +189,7 @@ namespace Wasmtime
                 throw new ArgumentNullException(nameof(engine));
             }
 
+            isAsyncSupportEnabled = engine.IsAsyncSupportEnabled;
             this.data = data;
 
             // Allocate a weak GCHandle, so that it does not participate in keeping the Store alive.
@@ -249,6 +307,26 @@ namespace Wasmtime
         }
 
         /// <summary>
+        /// Configures how often async WebAssembly execution should yield based on fuel usage.
+        /// </summary>
+        /// <param name="interval">The amount of fuel to consume between yields. Use 0 to disable yielding.</param>
+        public void SetFuelAsyncYieldInterval(ulong interval)
+        {
+            Context.SetFuelAsyncYieldInterval(interval);
+            System.GC.KeepAlive(this);
+        }
+
+        /// <summary>
+        /// Configures epoch-deadline expiration to yield and then update the deadline.
+        /// </summary>
+        /// <param name="deadlineDelta">The deadline delta to apply after each yield.</param>
+        public void SetEpochDeadlineAsyncYieldAndUpdate(ulong deadlineDelta)
+        {
+            Context.SetEpochDeadlineAsyncYieldAndUpdate(deadlineDelta);
+            System.GC.KeepAlive(this);
+        }
+
+        /// <summary>
         /// Retrieves the data stored in the Store context
         /// </summary>
         public object? GetData() => data;
@@ -301,6 +379,25 @@ namespace Wasmtime
             }
         }
 
+        internal bool IsAsyncSupportEnabled => isAsyncSupportEnabled;
+
+        /// <summary>
+        /// Gets the context of the store while an async call-future is in flight.
+        /// </summary>
+        internal StoreContext ContextForAsyncExecution
+        {
+            get
+            {
+                if (handle.IsClosed)
+                {
+                    throw new ObjectDisposedException(typeof(Store).FullName);
+                }
+
+                EnsureAccessibleFromCurrentThread(allowDuringAsyncExecution: true);
+                return new StoreContext(Native.wasmtime_store_context(NativeHandle));
+            }
+        }
+
         /// <summary>
         /// Enters an execution scope for this store.
         /// </summary>
@@ -309,12 +406,17 @@ namespace Wasmtime
         /// one thread. This scope tracks active wasm execution to prevent cross-thread re-entry
         /// from reaching undefined behavior in the unmanaged API.
         /// </remarks>
-        internal ExecutionScope EnterExecutionScope()
+        internal ExecutionScope EnterExecutionScope(bool allowDuringAsyncExecution = false)
         {
             var currentThreadId = Environment.CurrentManagedThreadId;
 
             lock (executionSync)
             {
+                if (asyncExecutionInProgress && !allowDuringAsyncExecution)
+                {
+                    throw CreateAsyncStoreAccessException();
+                }
+
                 if (executionOwnerThreadId == 0 || executionOwnerThreadId == currentThreadId)
                 {
                     executionOwnerThreadId = currentThreadId;
@@ -326,16 +428,40 @@ namespace Wasmtime
             throw CreateConcurrentStoreAccessException();
         }
 
-        internal void EnsureAccessibleFromCurrentThread()
+        internal void EnsureAccessibleFromCurrentThread(bool allowDuringAsyncExecution = false)
         {
             var currentThreadId = Environment.CurrentManagedThreadId;
 
             lock (executionSync)
             {
+                if (asyncExecutionInProgress && !allowDuringAsyncExecution)
+                {
+                    throw CreateAsyncStoreAccessException();
+                }
+
                 if (executionOwnerThreadId != 0 && executionOwnerThreadId != currentThreadId)
                 {
                     throw CreateConcurrentStoreAccessException();
                 }
+            }
+        }
+
+        internal AsyncExecutionLease EnterAsyncExecutionLease()
+        {
+            lock (executionSync)
+            {
+                if (asyncExecutionInProgress)
+                {
+                    throw CreateAsyncStoreAccessException();
+                }
+
+                if (executionOwnerThreadId != 0)
+                {
+                    throw CreateConcurrentStoreAccessException();
+                }
+
+                asyncExecutionInProgress = true;
+                return new AsyncExecutionLease(this);
             }
         }
 
@@ -358,11 +484,30 @@ namespace Wasmtime
             }
         }
 
+        private void ExitAsyncExecutionLease()
+        {
+            lock (executionSync)
+            {
+                if (!asyncExecutionInProgress)
+                {
+                    throw new InvalidOperationException("Invalid async store execution lease state.");
+                }
+
+                asyncExecutionInProgress = false;
+            }
+        }
+
         private static InvalidOperationException CreateConcurrentStoreAccessException()
         {
             return new InvalidOperationException(
                 "Concurrent access to a Store from multiple threads is not supported. " +
                 "Use one Store per thread or serialize access so only one thread uses a Store at a time.");
+        }
+
+        private static InvalidOperationException CreateAsyncStoreAccessException()
+        {
+            return new InvalidOperationException(
+                "A Store has an in-flight asynchronous call. Poll or dispose the call future before using this Store for other operations.");
         }
 
         internal readonly ref struct ExecutionScope
@@ -378,6 +523,22 @@ namespace Wasmtime
             }
 
             private readonly Store store;
+        }
+
+        internal sealed class AsyncExecutionLease : IDisposable
+        {
+            internal AsyncExecutionLease(Store store)
+            {
+                this.store = store;
+            }
+
+            public void Dispose()
+            {
+                var store = Interlocked.Exchange(ref this.store, null);
+                store?.ExitAsyncExecutionLease();
+            }
+
+            private Store? store;
         }
 
         internal class Handle : SafeHandleZeroOrMinusOneIsInvalid
@@ -416,6 +577,8 @@ namespace Wasmtime
         private readonly object executionSync = new();
         private int executionOwnerThreadId;
         private int executionDepth;
+        private bool asyncExecutionInProgress;
+        private readonly bool isAsyncSupportEnabled;
 
         private object? data;
 

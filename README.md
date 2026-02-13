@@ -127,6 +127,51 @@ producerLinker.Define("env", "mem", sharedMemory, producerStore);
 consumerLinker.Define("env", "mem", sharedMemory, consumerStore);
 ```
 
+## Async And Yielding Execution
+
+For cooperative preemption/resume of guest execution, enable async support and
+poll a call future:
+
+```csharp
+using var config = new Config()
+    .WithAsyncSupport(true)
+    .WithFuelConsumption(true);
+using var engine = new Engine(config);
+using var store = new Store(engine);
+using var linker = new Linker(engine);
+
+store.Fuel = 1_000_000;
+store.SetFuelAsyncYieldInterval(10_000);
+
+var instance = await linker.InstantiateAsync(store, module);
+var run = instance.GetFunction("run")!;
+
+using var future = run.BeginInvokeAsync();
+while (!future.Poll())
+{
+    // yielded; drive your scheduler/event loop here
+}
+
+var result = future.GetResult();
+```
+
+Or use the convenience API:
+
+```csharp
+var result = await run.InvokeAsync();
+```
+
+While a `FunctionCallFuture` is alive, the corresponding `Store` is reserved
+for that call and cannot be used for other operations.
+
+When async support is enabled for a store, use `Linker.InstantiateAsync` (not
+`Linker.Instantiate`) and `Function.InvokeAsync`/`Function.BeginInvokeAsync`
+(not synchronous `Function.Invoke`).
+
+Note: these APIs require a Wasmtime native runtime build that exports async C
+API symbols. If the loaded runtime does not include async support, these calls
+throw `NotSupportedException`.
+
 ## Contributing
 
 ### Building

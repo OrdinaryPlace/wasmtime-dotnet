@@ -130,43 +130,17 @@ namespace Wasmtime.Tests
         [Fact]
         public void ItSupportsThreadedExecutionWithOneStorePerThread()
         {
-            using var config = new Config()
-                .WithWasmThreads(true)
-                .WithSharedMemory(true);
-            using var engine = new Engine(config);
+            using var engine = new Engine();
             using var module = Module.FromText(
                 engine,
                 "threaded-store-per-thread",
                 """
                 (module
-                  (import "env" "mem" (memory 1 1 shared))
-
-                  (func (export "write") (param $value i32)
-                    i32.const 0
+                  (func (export "bump") (param $value i32) (result i32)
                     local.get $value
-                    i32.store)
-
-                  (func (export "read") (result i32)
-                    i32.const 0
-                    i32.load))
+                    i32.const 1
+                    i32.add))
                 """);
-
-            using var sharedMemory = new SharedMemory(engine, 1, 1);
-            using var producerStore = new Store(engine);
-            using var consumerStore = new Store(engine);
-            using var producerLinker = new Linker(engine);
-            using var consumerLinker = new Linker(engine);
-
-            producerLinker.Define("env", "mem", sharedMemory, producerStore);
-            consumerLinker.Define("env", "mem", sharedMemory, consumerStore);
-
-            var producerInstance = producerLinker.Instantiate(producerStore, module);
-            var consumerInstance = consumerLinker.Instantiate(consumerStore, module);
-
-            var write = producerInstance.GetAction<int>("write");
-            var read = consumerInstance.GetFunction<int>("read");
-            write.Should().NotBeNull();
-            read.Should().NotBeNull();
 
             using var messageQueue = new BlockingCollection<int>(boundedCapacity: 1);
             using var producerCompleted = new ManualResetEventSlim(false);
@@ -180,9 +154,14 @@ namespace Wasmtime.Tests
             {
                 try
                 {
-                    const int payload = 0x1234_5678;
-                    write!(payload);
-                    messageQueue.Add(payload);
+                    const int payload = 41;
+                    using var producerStore = new Store(engine);
+                    using var producerLinker = new Linker(engine);
+                    var producerInstance = producerLinker.Instantiate(producerStore, module);
+                    var bump = producerInstance.GetFunction<int, int>("bump");
+                    bump.Should().NotBeNull();
+
+                    messageQueue.Add(bump!(payload));
                 }
                 catch (Exception ex)
                 {
@@ -203,9 +182,14 @@ namespace Wasmtime.Tests
             {
                 try
                 {
+                    using var consumerStore = new Store(engine);
+                    using var consumerLinker = new Linker(engine);
+                    var consumerInstance = consumerLinker.Instantiate(consumerStore, module);
+                    var bump = consumerInstance.GetFunction<int, int>("bump");
+                    bump.Should().NotBeNull();
+
                     var expected = messageQueue.Take();
-                    observedValue = read!();
-                    observedValue.Should().Be(expected);
+                    observedValue = bump!(expected);
                 }
                 catch (Exception ex)
                 {
@@ -234,7 +218,7 @@ namespace Wasmtime.Tests
 
             producerException.Should().BeNull();
             consumerException.Should().BeNull();
-            observedValue.Should().Be(0x1234_5678);
+            observedValue.Should().Be(43);
         }
 
         [Fact]

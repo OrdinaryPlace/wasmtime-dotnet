@@ -584,8 +584,6 @@ namespace Wasmtime
 
         internal static class Native
         {
-            private const byte DefaultWasmPageSizeLog2 = 16;
-
             [DllImport(Engine.LibraryName)]
             public static extern IntPtr wasmtime_memory_new(IntPtr context, IntPtr typeHandle, out ExternMemory memory);
 
@@ -606,17 +604,10 @@ namespace Wasmtime
 
             public static IntPtr wasmtime_memorytype_new(ulong min, [MarshalAs(UnmanagedType.I1)] bool max_present, ulong max, [MarshalAs(UnmanagedType.I1)] bool is_64, [MarshalAs(UnmanagedType.I1)] bool shared)
             {
-                var error = wasmtime_memorytype_new_native(
-                    min,
-                    max_present,
-                    max,
-                    is_64,
-                    shared,
-                    DefaultWasmPageSizeLog2,
-                    out var typeHandle);
-                if (error != IntPtr.Zero)
+                var typeHandle = wasmtime_memorytype_new_native(min, max_present, max, is_64, shared);
+                if (typeHandle == IntPtr.Zero)
                 {
-                    throw WasmtimeException.FromOwnedError(error);
+                    throw new WasmtimeException("Failed to create memory type.");
                 }
 
                 return typeHandle;
@@ -628,9 +619,7 @@ namespace Wasmtime
                 [MarshalAs(UnmanagedType.I1)] bool max_present,
                 ulong max,
                 [MarshalAs(UnmanagedType.I1)] bool is_64,
-                [MarshalAs(UnmanagedType.I1)] bool shared,
-                byte page_size_log2,
-                out IntPtr ret);
+                [MarshalAs(UnmanagedType.I1)] bool shared);
 
             [DllImport(Engine.LibraryName)]
             public static extern ulong wasmtime_memorytype_minimum(IntPtr type);

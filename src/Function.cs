@@ -5,6 +5,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Wasmtime
 {
@@ -251,6 +253,105 @@ namespace Wasmtime
         }
 
         /// <summary>
+        /// Starts asynchronously invoking the Wasmtime function with no arguments.
+        /// </summary>
+        /// <returns>A call-future that can be polled to completion.</returns>
+        public FunctionCallFuture BeginInvokeAsync()
+        {
+            return BeginInvokeAsync(ReadOnlyMemory<ValueBox>.Empty);
+        }
+
+        /// <summary>
+        /// Starts asynchronously invoking the Wasmtime function.
+        /// </summary>
+        /// <param name="arguments">The array of arguments to pass to the function.</param>
+        /// <returns>A call-future that can be polled to completion.</returns>
+        public FunctionCallFuture BeginInvokeAsync(params ValueBox[] arguments)
+        {
+            if (arguments is null)
+            {
+                throw new ArgumentNullException(nameof(arguments));
+            }
+
+            return BeginInvokeAsync((ReadOnlyMemory<ValueBox>)arguments);
+        }
+
+        /// <summary>
+        /// Starts asynchronously invoking the Wasmtime function.
+        /// </summary>
+        /// <param name="arguments">The arguments to pass to the function, wrapped in <see cref="ValueBox"/>.</param>
+        /// <returns>A call-future that can be polled to completion.</returns>
+        public FunctionCallFuture BeginInvokeAsync(ReadOnlyMemory<ValueBox> arguments)
+        {
+            if (IsNull)
+            {
+                throw new InvalidOperationException("Cannot invoke a null function reference.");
+            }
+
+            if (store is null)
+            {
+                throw new ArgumentNullException(nameof(store));
+            }
+
+            if (arguments.Length != Parameters.Count)
+            {
+                throw new WasmtimeException($"Argument mismatch when invoking function: requires {Parameters.Count} but was given {arguments.Length}.");
+            }
+
+            return new FunctionCallFuture(this, arguments);
+        }
+
+        /// <summary>
+        /// Asynchronously invokes the Wasmtime function with no arguments.
+        /// </summary>
+        /// <param name="cancellationToken">A cancellation token used while polling the call-future.</param>
+        /// <returns>
+        ///   Returns null if the function has no return value.
+        ///   Returns the value if the function returns a single value.
+        ///   Returns an array of values if the function returns more than one value.
+        /// </returns>
+        public Task<object?> InvokeAsync(CancellationToken cancellationToken = default)
+        {
+            return InvokeAsync(ReadOnlyMemory<ValueBox>.Empty, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously invokes the Wasmtime function.
+        /// </summary>
+        /// <param name="arguments">The array of arguments to pass to the function.</param>
+        /// <param name="cancellationToken">A cancellation token used while polling the call-future.</param>
+        /// <returns>
+        ///   Returns null if the function has no return value.
+        ///   Returns the value if the function returns a single value.
+        ///   Returns an array of values if the function returns more than one value.
+        /// </returns>
+        public Task<object?> InvokeAsync(ValueBox[] arguments, CancellationToken cancellationToken = default)
+        {
+            if (arguments is null)
+            {
+                throw new ArgumentNullException(nameof(arguments));
+            }
+
+            return InvokeAsync((ReadOnlyMemory<ValueBox>)arguments, cancellationToken);
+        }
+
+        /// <summary>
+        /// Asynchronously invokes the Wasmtime function.
+        /// </summary>
+        /// <param name="arguments">The arguments to pass to the function, wrapped in <see cref="ValueBox"/>.</param>
+        /// <param name="cancellationToken">A cancellation token used while polling the call-future.</param>
+        /// <returns>
+        ///   Returns null if the function has no return value.
+        ///   Returns the value if the function returns a single value.
+        ///   Returns an array of values if the function returns more than one value.
+        /// </returns>
+        public async Task<object?> InvokeAsync(ReadOnlyMemory<ValueBox> arguments, CancellationToken cancellationToken = default)
+        {
+            using var future = BeginInvokeAsync(arguments);
+            return await future.CompleteAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Invokes the Wasmtime function.
         /// </summary>
         /// <param name="arguments">The array of arguments to pass to the function.</param>
@@ -380,6 +481,8 @@ namespace Wasmtime
                 throw new ArgumentNullException(nameof(store));
             }
 
+            EnsureSynchronousInvocationSupported(store);
+
             using var executionScope = store.EnterExecutionScope();
             var context = store.Context;
 
@@ -431,6 +534,8 @@ namespace Wasmtime
                 throw new ArgumentNullException(nameof(store));
             }
 
+            EnsureSynchronousInvocationSupported(store);
+
             using var executionScope = store.EnterExecutionScope();
             IntPtr error;
             IntPtr trap;
@@ -448,6 +553,15 @@ namespace Wasmtime
             }
 
             return trap;
+        }
+
+        private static void EnsureSynchronousInvocationSupported(Store store)
+        {
+            if (store.IsAsyncSupportEnabled)
+            {
+                throw new InvalidOperationException(
+                    "This Store was created with async support enabled. Use Function.InvokeAsync or Function.BeginInvokeAsync.");
+            }
         }
 
         Extern IExternal.AsExtern()
@@ -754,6 +868,52 @@ namespace Wasmtime
 
             [DllImport(Engine.LibraryName)]
             public static unsafe extern IntPtr wasmtime_func_call_unchecked(IntPtr context, in ExternFunc func, ValueRaw* args_and_results, nuint args_and_results_len, out IntPtr trap);
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_func_call_async")]
+            private static unsafe extern IntPtr wasmtime_func_call_async_native(IntPtr context, in ExternFunc func, Value* args, nuint nargs, Value* results, nuint nresults, IntPtr trapRet, IntPtr errorRet);
+
+            public static unsafe IntPtr wasmtime_func_call_async(IntPtr context, in ExternFunc func, Value* args, nuint nargs, Value* results, nuint nresults, IntPtr trapRet, IntPtr errorRet)
+            {
+                try
+                {
+                    return wasmtime_func_call_async_native(context, in func, args, nargs, results, nresults, trapRet, errorRet);
+                }
+                catch (EntryPointNotFoundException ex)
+                {
+                    throw new NotSupportedException("Async support is not available in the loaded Wasmtime runtime.", ex);
+                }
+            }
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_call_future_poll")]
+            [return: MarshalAs(UnmanagedType.I1)]
+            private static extern bool wasmtime_call_future_poll_native(IntPtr future);
+
+            public static bool wasmtime_call_future_poll(IntPtr future)
+            {
+                try
+                {
+                    return wasmtime_call_future_poll_native(future);
+                }
+                catch (EntryPointNotFoundException ex)
+                {
+                    throw new NotSupportedException("Async support is not available in the loaded Wasmtime runtime.", ex);
+                }
+            }
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_call_future_delete")]
+            private static extern void wasmtime_call_future_delete_native(IntPtr future);
+
+            public static void wasmtime_call_future_delete(IntPtr future)
+            {
+                try
+                {
+                    wasmtime_call_future_delete_native(future);
+                }
+                catch (EntryPointNotFoundException ex)
+                {
+                    throw new NotSupportedException("Async support is not available in the loaded Wasmtime runtime.", ex);
+                }
+            }
 
             [DllImport(Engine.LibraryName)]
             public static extern IntPtr wasmtime_func_type(IntPtr context, in ExternFunc func);

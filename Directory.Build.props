@@ -2,7 +2,7 @@
   <PropertyGroup>
     <DevBuild Condition="'$(DevBuild)'==''">true</DevBuild>
     <WasmtimeVersion Condition="'$(WasmtimeVersion)'==''">35.0.0</WasmtimeVersion>
-    <WasmtimeDotnetVersion Condition="'$(WasmtimeDotnetVersion)'==''">-ordinary.3</WasmtimeDotnetVersion>
+    <WasmtimeDotnetVersion Condition="'$(WasmtimeDotnetVersion)'==''">-ordinary.4</WasmtimeDotnetVersion>
     <WasmtimePackageVersion Condition="'$(DevBuild)'=='true'">$(WasmtimeVersion)$(WasmtimeDotnetVersion)-dev</WasmtimePackageVersion>
     <WasmtimePackageVersion Condition="'$(WasmtimePackageVersion)'==''">$(WasmtimeVersion)$(WasmtimeDotnetVersion)</WasmtimePackageVersion>
   </PropertyGroup>
