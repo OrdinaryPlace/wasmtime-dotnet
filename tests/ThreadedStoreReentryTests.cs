@@ -238,88 +238,106 @@ namespace Wasmtime.Tests
         }
 
         [Fact]
-        public void ItThrowsManagedErrorWhenGlobalAccessorCrossesThreadsDuringActiveExecution()
+        public void ItDemonstratesBusyRetryWithoutProgressWhenStoreIsContendedAcrossThreads()
         {
             using var engine = new Engine();
             using var module = Module.FromText(
                 engine,
-                "threaded-store-global-reentry",
+                "threaded-store-livelock-retry",
                 """
                 (module
-                  (import "env" "wait" (func $wait))
-                  (global (export "shared_global") (mut i32) (i32.const 7))
+                  (type $thread_fn (func (param i32) (result i32)))
+                  (import "env" "spawn" (func $spawn (param i32 i32) (result i32)))
+                  (import "env" "wait_window" (func $wait_window))
+                  (memory (export "memory") 1)
+                  (table (export "__indirect_function_table") 2 funcref)
+                  (elem (i32.const 1) $target)
+
+                  (func $target (param $arg i32) (result i32)
+                    i32.const 0)
+
                   (func (export "run")
-                    call $wait))
+                    i32.const 1
+                    i32.const 0
+                    call $spawn
+                    drop
+                    call $wait_window))
                 """);
 
             using var store = new Store(engine);
             using var linker = new Linker(engine);
 
-            using var enteredWait = new ManualResetEventSlim(false);
-            using var releaseWait = new ManualResetEventSlim(false);
-            using var runCompleted = new ManualResetEventSlim(false);
+            using var workerStarted = new ManualResetEventSlim(false);
+            using var workerCompleted = new ManualResetEventSlim(false);
 
-            linker.DefineFunction("env", "wait", () =>
+            var stopWorker = 0;
+            var contentionFailures = 0;
+            var successfulInvocations = 0;
+            Exception? workerException = null;
+            Table? table = null;
+
+            linker.DefineFunction("env", "spawn", (int startRoutine, int startArg) =>
             {
-                enteredWait.Set();
-                releaseWait.Wait(TimeSpan.FromSeconds(3))
+                var thread = new Thread(() =>
+                {
+                    workerStarted.Set();
+                    while (Interlocked.CompareExchange(ref stopWorker, 0, 0) == 0)
+                    {
+                        try
+                        {
+                            var start = table!.GetElement(unchecked((uint)startRoutine)) as Function;
+                            start.Should().NotBeNull();
+                            var startFunc = start!.WrapFunc<int, int>();
+                            startFunc.Should().NotBeNull();
+                            _ = startFunc!(startArg);
+                            Interlocked.Increment(ref successfulInvocations);
+                        }
+                        catch (InvalidOperationException ex)
+                            when (ex.Message.Contains("Concurrent access to a Store"))
+                        {
+                            Interlocked.Increment(ref contentionFailures);
+                        }
+                        catch (Exception ex)
+                        {
+                            workerException = ex;
+                            break;
+                        }
+                    }
+
+                    workerCompleted.Set();
+                });
+
+                thread.IsBackground = true;
+                thread.Name = "wasmtime-threaded-store-busy-retry";
+                thread.Start();
+                return 0;
+            });
+
+            linker.DefineFunction("env", "wait_window", () =>
+            {
+                workerStarted.Wait(TimeSpan.FromSeconds(3))
                     .Should()
-                    .BeTrue("test should release the blocking callback");
+                    .BeTrue("worker should start while run() is active");
+
+                Thread.Sleep(TimeSpan.FromMilliseconds(200));
+                Interlocked.Exchange(ref stopWorker, 1);
             });
 
             var instance = linker.Instantiate(store, module);
+            table = instance.GetTable("__indirect_function_table");
+            table.Should().NotBeNull();
+
             var run = instance.GetAction("run");
             run.Should().NotBeNull();
+            run!();
 
-            var sharedGlobalAccessor = instance.GetGlobal("shared_global")?.Wrap<int>();
-            sharedGlobalAccessor.Should().NotBeNull();
-
-            Exception? runException = null;
-
-            var wasmThread = new Thread(() =>
-            {
-                try
-                {
-                    run!();
-                }
-                catch (Exception ex)
-                {
-                    runException = ex;
-                }
-                finally
-                {
-                    runCompleted.Set();
-                }
-            })
-            {
-                IsBackground = true,
-                Name = "wasmtime-threaded-store-global-reentry"
-            };
-
-            wasmThread.Start();
-
-            enteredWait.Wait(TimeSpan.FromSeconds(3))
+            workerCompleted.Wait(TimeSpan.FromSeconds(3))
                 .Should()
-                .BeTrue("run should enter the blocking callback");
+                .BeTrue("worker should stop when the retry window closes");
 
-            Action accessSharedGlobal = () => _ = sharedGlobalAccessor!.GetValue();
-            accessSharedGlobal
-                .Should()
-                .Throw<InvalidOperationException>()
-                .Which.Message
-                .Should()
-                .Contain("Concurrent access to a Store");
-
-            releaseWait.Set();
-
-            runCompleted.Wait(TimeSpan.FromSeconds(3))
-                .Should()
-                .BeTrue("wasm execution should complete after the callback is released");
-
-            runException.Should().BeNull();
-
-            sharedGlobalAccessor!.SetValue(11);
-            sharedGlobalAccessor.GetValue().Should().Be(11);
+            workerException.Should().BeNull();
+            successfulInvocations.Should().Be(0, "contended shared-store retries should make no progress");
+            contentionFailures.Should().BeGreaterThan(100, "busy retries should accumulate quickly and indicate CPU churn");
         }
     }
 }
