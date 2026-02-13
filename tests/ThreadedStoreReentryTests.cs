@@ -236,5 +236,90 @@ namespace Wasmtime.Tests
             consumerException.Should().BeNull();
             observedValue.Should().Be(0x1234_5678);
         }
+
+        [Fact]
+        public void ItThrowsManagedErrorWhenGlobalAccessorCrossesThreadsDuringActiveExecution()
+        {
+            using var engine = new Engine();
+            using var module = Module.FromText(
+                engine,
+                "threaded-store-global-reentry",
+                """
+                (module
+                  (import "env" "wait" (func $wait))
+                  (global (export "shared_global") (mut i32) (i32.const 7))
+                  (func (export "run")
+                    call $wait))
+                """);
+
+            using var store = new Store(engine);
+            using var linker = new Linker(engine);
+
+            using var enteredWait = new ManualResetEventSlim(false);
+            using var releaseWait = new ManualResetEventSlim(false);
+            using var runCompleted = new ManualResetEventSlim(false);
+
+            linker.DefineFunction("env", "wait", () =>
+            {
+                enteredWait.Set();
+                releaseWait.Wait(TimeSpan.FromSeconds(3))
+                    .Should()
+                    .BeTrue("test should release the blocking callback");
+            });
+
+            var instance = linker.Instantiate(store, module);
+            var run = instance.GetAction("run");
+            run.Should().NotBeNull();
+
+            var sharedGlobalAccessor = instance.GetGlobal("shared_global")?.Wrap<int>();
+            sharedGlobalAccessor.Should().NotBeNull();
+
+            Exception? runException = null;
+
+            var wasmThread = new Thread(() =>
+            {
+                try
+                {
+                    run!();
+                }
+                catch (Exception ex)
+                {
+                    runException = ex;
+                }
+                finally
+                {
+                    runCompleted.Set();
+                }
+            })
+            {
+                IsBackground = true,
+                Name = "wasmtime-threaded-store-global-reentry"
+            };
+
+            wasmThread.Start();
+
+            enteredWait.Wait(TimeSpan.FromSeconds(3))
+                .Should()
+                .BeTrue("run should enter the blocking callback");
+
+            Action accessSharedGlobal = () => _ = sharedGlobalAccessor!.GetValue();
+            accessSharedGlobal
+                .Should()
+                .Throw<InvalidOperationException>()
+                .Which.Message
+                .Should()
+                .Contain("Concurrent access to a Store");
+
+            releaseWait.Set();
+
+            runCompleted.Wait(TimeSpan.FromSeconds(3))
+                .Should()
+                .BeTrue("wasm execution should complete after the callback is released");
+
+            runException.Should().BeNull();
+
+            sharedGlobalAccessor!.SetValue(11);
+            sharedGlobalAccessor.GetValue().Should().Be(11);
+        }
     }
 }
