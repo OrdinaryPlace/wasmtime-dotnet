@@ -414,7 +414,13 @@ namespace Wasmtime
             {
                 if (asyncExecutionInProgress && !allowDuringAsyncExecution)
                 {
-                    throw CreateAsyncStoreAccessException();
+                    var isReentrantOnExecutionOwner =
+                        executionOwnerThreadId == currentThreadId &&
+                        executionDepth > 0;
+                    if (!isReentrantOnExecutionOwner)
+                    {
+                        throw CreateAsyncStoreAccessException();
+                    }
                 }
 
                 if (executionOwnerThreadId == 0 || executionOwnerThreadId == currentThreadId)
@@ -436,7 +442,13 @@ namespace Wasmtime
             {
                 if (asyncExecutionInProgress && !allowDuringAsyncExecution)
                 {
-                    throw CreateAsyncStoreAccessException();
+                    var isReentrantOnExecutionOwner =
+                        executionOwnerThreadId == currentThreadId &&
+                        executionDepth > 0;
+                    if (!isReentrantOnExecutionOwner)
+                    {
+                        throw CreateAsyncStoreAccessException();
+                    }
                 }
 
                 if (executionOwnerThreadId != 0 && executionOwnerThreadId != currentThreadId)

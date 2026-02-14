@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Wasmtime;
 using Xunit;
@@ -322,6 +323,116 @@ namespace Wasmtime.Tests
             workerException.Should().BeNull();
             successfulInvocations.Should().Be(0, "contended shared-store retries should make no progress");
             contentionFailures.Should().BeGreaterThan(100, "busy retries should accumulate quickly and indicate CPU churn");
+        }
+
+        [Fact]
+        public async Task ItAllowsQueuedThreadPumpAccessInsideAsyncCallbackExecution()
+        {
+            Engine? engine = null;
+            Module? module = null;
+            Store? store = null;
+            Linker? linker = null;
+
+            try
+            {
+                using var config = new Config().WithAsyncSupport(true);
+                engine = new Engine(config);
+                module = Module.FromText(
+                    engine,
+                    "threaded-async-pump-reentry",
+                    """
+                    (module
+                      (import "env" "spawn" (func $spawn (param i32) (result i32)))
+                      (import "env" "wait" (func $wait))
+                      (global (export "state") i32 (i32.const 17))
+                      (func (export "worker") (result i32)
+                        i32.const 7)
+                      (func (export "run")
+                        i32.const 0
+                        call $spawn
+                        drop
+                        call $wait))
+                    """);
+                store = new Store(engine);
+                linker = new Linker(engine);
+            }
+            catch (NotSupportedException)
+            {
+                linker?.Dispose();
+                store?.Dispose();
+                module?.Dispose();
+                engine?.Dispose();
+                return;
+            }
+
+            using (engine)
+            using (module)
+            using (store)
+            using (linker)
+            {
+                var queuedWork = new ConcurrentQueue<Action>();
+                var pumpAttempted = new ManualResetEventSlim(false);
+                var pumpCompleted = new ManualResetEventSlim(false);
+                Exception? pumpException = null;
+                Instance? instance = null;
+                var workerResolved = 0;
+                var globalRead = 0;
+
+                linker.DefineFunction("env", "spawn", (int _) =>
+                {
+                    queuedWork.Enqueue(() =>
+                    {
+                        // Mirrors the integration scheduler pattern where queued worker
+                        // work needs to touch instance exports while the async call-future
+                        // for run() is still in flight.
+                        var worker = instance!.GetFunction("worker");
+                        worker.Should().NotBeNull();
+                        Interlocked.Increment(ref workerResolved);
+
+                        var global = instance.GetGlobal("state");
+                        global.Should().NotBeNull();
+                        var accessor = global!.Wrap<int>();
+                        accessor.Should().NotBeNull();
+                        globalRead = accessor!.GetValue();
+                    });
+
+                    return 0;
+                });
+
+                linker.DefineFunction("env", "wait", () =>
+                {
+                    if (queuedWork.TryDequeue(out var work))
+                    {
+                        pumpAttempted.Set();
+                        try
+                        {
+                            work();
+                        }
+                        catch (Exception ex)
+                        {
+                            pumpException = ex;
+                        }
+                        finally
+                        {
+                            pumpCompleted.Set();
+                        }
+                    }
+                });
+
+                instance = await linker.InstantiateAsync(store, module);
+                var run = instance.GetFunction("run");
+                run.Should().NotBeNull();
+
+                await run!.InvokeAsync();
+
+                pumpAttempted.IsSet.Should().BeTrue("the queued worker should be pumped during wait()");
+                pumpCompleted.Wait(TimeSpan.FromSeconds(1))
+                    .Should()
+                    .BeTrue("queued work should complete during callback execution");
+                pumpException.Should().BeNull("store access should be allowed while re-entering from async callback on the execution owner thread");
+                workerResolved.Should().Be(1);
+                globalRead.Should().Be(17);
+            }
         }
     }
 }
