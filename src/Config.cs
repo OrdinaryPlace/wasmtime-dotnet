@@ -380,6 +380,17 @@ namespace Wasmtime
             return this;
         }
 
+        /// <summary>
+        /// Configures whether signal-based trap handling is enabled.
+        /// </summary>
+        /// <param name="enable">True to enable signal-based trap handling or false to disable.</param>
+        /// <returns>Returns the current config.</returns>
+        public Config WithSignalsBasedTraps(bool enable)
+        {
+            Native.wasmtime_config_signals_based_traps_set(handle, enable);
+            return this;
+        }
+
         /// <inheritdoc/>
         public void Dispose()
         {
@@ -533,8 +544,39 @@ namespace Wasmtime
             [DllImport(Engine.LibraryName)]
             public static extern IntPtr wasmtime_config_cache_config_load(Handle config, [MarshalAs(Extensions.LPUTF8Str)] string? path);
 
-            [DllImport(Engine.LibraryName)]
-            public static extern void wasmtime_config_macos_use_mach_ports(Handle config, [MarshalAs(UnmanagedType.I1)] bool enable);
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_config_macos_use_mach_ports_set")]
+            private static extern void wasmtime_config_macos_use_mach_ports_set(Handle config, [MarshalAs(UnmanagedType.I1)] bool enable);
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_config_macos_use_mach_ports")]
+            private static extern void wasmtime_config_macos_use_mach_ports_legacy(Handle config, [MarshalAs(UnmanagedType.I1)] bool enable);
+
+            public static void wasmtime_config_macos_use_mach_ports(Handle config, [MarshalAs(UnmanagedType.I1)] bool enable)
+            {
+                try
+                {
+                    wasmtime_config_macos_use_mach_ports_set(config, enable);
+                }
+                catch (EntryPointNotFoundException)
+                {
+                    // Older native libraries may expose this API without the `_set` suffix.
+                    wasmtime_config_macos_use_mach_ports_legacy(config, enable);
+                }
+            }
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_config_signals_based_traps_set")]
+            private static extern void wasmtime_config_signals_based_traps_set_native(Handle config, [MarshalAs(UnmanagedType.I1)] bool enable);
+
+            public static void wasmtime_config_signals_based_traps_set(Handle config, [MarshalAs(UnmanagedType.I1)] bool enable)
+            {
+                try
+                {
+                    wasmtime_config_signals_based_traps_set_native(config, enable);
+                }
+                catch (EntryPointNotFoundException ex)
+                {
+                    throw new NotSupportedException("Signal-based trap configuration is not available in the loaded Wasmtime runtime.", ex);
+                }
+            }
         }
 
         private readonly Handle handle;

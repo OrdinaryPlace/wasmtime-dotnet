@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Wasmtime
@@ -215,6 +216,8 @@ namespace Wasmtime
     [StructLayout(LayoutKind.Sequential)]
     internal struct Value
     {
+        static Value() => Debug.Assert(Marshal.SizeOf(typeof(Value)) == 32);
+
         public void Release(Store store)
         {
             Release(store, allowDuringAsyncExecution: false);
@@ -515,6 +518,8 @@ namespace Wasmtime
     [StructLayout(LayoutKind.Explicit)]
     internal unsafe struct ValueUnion
     {
+        static ValueUnion() => Debug.Assert(Marshal.SizeOf(typeof(ValueUnion)) == 24);
+
         [FieldOffset(0)]
         public int i32;
 
@@ -543,20 +548,28 @@ namespace Wasmtime
     [StructLayout(LayoutKind.Sequential)]
     internal struct AnyRef
     {
+        static AnyRef() => Debug.Assert(Marshal.SizeOf(typeof(AnyRef)) == 24);
+
         public ulong store;
 
         private uint __private1;
 
         private uint __private2;
+
+        private IntPtr __private3;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     internal struct ExternRef
     {
+        static ExternRef() => Debug.Assert(Marshal.SizeOf(typeof(ExternRef)) == 24);
+
         public ulong store;
 
         private uint __private1;
 
         private uint __private2;
+
+        private IntPtr __private3;
     }
 }

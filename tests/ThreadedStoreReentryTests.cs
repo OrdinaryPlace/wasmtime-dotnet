@@ -223,6 +223,12 @@ namespace Wasmtime.Tests
         }
 
         [Fact]
+        public void ItReproducesCallStackExhaustedTrapFromThreadBootstrapEntry()
+        {
+            ExecuteWorkerBootstrapStackProbe();
+        }
+
+        [Fact]
         public void ItDemonstratesBusyRetryWithoutProgressWhenStoreIsContendedAcrossThreads()
         {
             using var engine = new Engine();
@@ -323,6 +329,225 @@ namespace Wasmtime.Tests
             workerException.Should().BeNull();
             successfulInvocations.Should().Be(0, "contended shared-store retries should make no progress");
             contentionFailures.Should().BeGreaterThan(100, "busy retries should accumulate quickly and indicate CPU churn");
+        }
+
+        [Fact]
+        public void ItDemonstratesSharedLockWordTimeoutWhenPerThreadInstancesDivergeGlobalAddressState()
+        {
+            using var config = new Config()
+                .WithWasmThreads(true)
+                .WithSharedMemory(true);
+            using var engine = new Engine(config);
+            using var module = Module.FromText(
+                engine,
+                "shared-lock-word-global-divergence",
+                """
+                (module
+                  (import "env" "mem" (memory 1 1 shared))
+                  (import "env" "spawn" (func $spawn (param i32) (result i32)))
+
+                  (global $lock_addr (mut i32) (i32.const 0))
+                  (global $ready_addr i32 (i32.const 4))
+                  (global $observed_addr i32 (i32.const 8))
+
+                  (func $wait_until_nonzero (param $addr i32) (param $retries i32) (result i32)
+                    (local $remaining i32)
+                    local.get $retries
+                    local.set $remaining
+                    block $timeout
+                      loop $retry
+                        local.get $addr
+                        i32.load
+                        i32.const 0
+                        i32.ne
+                        if
+                          i32.const 0
+                          return
+                        end
+
+                        local.get $remaining
+                        i32.eqz
+                        br_if $timeout
+
+                        local.get $remaining
+                        i32.const 1
+                        i32.sub
+                        local.set $remaining
+                        br $retry
+                      end
+                    end
+                    i32.const -1)
+
+                  (func $wait_until_zero (param $addr i32) (param $retries i32) (result i32)
+                    (local $remaining i32)
+                    local.get $retries
+                    local.set $remaining
+                    block $timeout
+                      loop $retry
+                        local.get $addr
+                        i32.load
+                        i32.const 0
+                        i32.eq
+                        if
+                          i32.const 0
+                          return
+                        end
+
+                        local.get $remaining
+                        i32.eqz
+                        br_if $timeout
+
+                        local.get $remaining
+                        i32.const 1
+                        i32.sub
+                        local.set $remaining
+                        br $retry
+                      end
+                    end
+                    i32.const -1)
+
+                  (func (export "run") (result i32)
+                    ;; Primary instance sets lock_addr to 64. Worker in a separate
+                    ;; instance keeps the default global value (0).
+                    i32.const 64
+                    global.set $lock_addr
+
+                    ;; Seed lock words: intended at 64, divergent sentinel at 0.
+                    i32.const 64
+                    i32.const 1
+                    i32.store
+                    i32.const 0
+                    i32.const 1
+                    i32.store
+
+                    ;; Reset observability words.
+                    global.get $ready_addr
+                    i32.const 0
+                    i32.store
+                    global.get $observed_addr
+                    i32.const -1
+                    i32.store
+
+                    i32.const 0
+                    call $spawn
+                    drop
+
+                    global.get $ready_addr
+                    i32.const 5000000
+                    call $wait_until_nonzero
+                    i32.const 0
+                    i32.ne
+                    if
+                      i32.const -2
+                      return
+                    end
+
+                    i32.const 64
+                    i32.const 5000000
+                    call $wait_until_zero)
+
+                  (func (export "worker") (result i32)
+                    (local $observed i32)
+                    global.get $lock_addr
+                    local.set $observed
+                    global.get $observed_addr
+                    local.get $observed
+                    i32.store
+
+                    global.get $ready_addr
+                    i32.const 1
+                    i32.store
+
+                    local.get $observed
+                    i32.const 0
+                    i32.store
+
+                    i32.const 0))
+                """);
+
+            using var sharedMemory = new SharedMemory(engine, 1, 1);
+            using var primaryStore = new Store(engine);
+            using var primaryLinker = new Linker(engine);
+            using var workerCompleted = new ManualResetEventSlim(false);
+
+            Exception? workerException = null;
+            var workerResult = int.MinValue;
+
+            primaryLinker.Define("env", "mem", sharedMemory, primaryStore);
+            primaryLinker.DefineFunction("env", "spawn", (int _) =>
+            {
+                var workerThread = new Thread(() =>
+                {
+                    try
+                    {
+                        using var workerStore = new Store(engine);
+                        using var workerLinker = new Linker(engine);
+                        workerLinker.Define("env", "mem", sharedMemory, workerStore);
+                        workerLinker.DefineFunction("env", "spawn", (int __) => 0);
+
+                        var workerInstance = workerLinker.Instantiate(workerStore, module);
+                        var worker = workerInstance.GetFunction<int>("worker");
+                        worker.Should().NotBeNull();
+                        workerResult = worker!();
+                    }
+                    catch (Exception ex)
+                    {
+                        workerException = ex;
+                    }
+                    finally
+                    {
+                        workerCompleted.Set();
+                    }
+                })
+                {
+                    IsBackground = true,
+                    Name = "wasmtime-shared-lock-word-worker"
+                };
+
+                workerThread.Start();
+                return 0;
+            });
+
+            var primaryInstance = primaryLinker.Instantiate(primaryStore, module);
+            var run = primaryInstance.GetFunction<int>("run");
+            run.Should().NotBeNull();
+
+            var runResult = run!();
+
+            workerCompleted.Wait(TimeSpan.FromSeconds(3))
+                .Should()
+                .BeTrue("worker thread should complete");
+
+            workerException.Should().BeNull();
+            workerResult.Should().Be(0);
+            runResult.Should().Be(-1, "primary instance waits on lock word 64 while worker releases the divergent lock word address");
+            sharedMemory.ReadInt32(8).Should().Be(0, "worker instance observes default lock_addr global value");
+            sharedMemory.ReadInt32(0).Should().Be(0, "worker should release the divergent lock word");
+            sharedMemory.ReadInt32(64).Should().Be(1, "intended lock word remains unchanged and run() times out");
+        }
+
+        [Fact]
+        public void ItTrapsOnDirectRecursionWithCallStackExhausted()
+        {
+            using var engine = new Engine();
+            using var module = Module.FromText(
+                engine,
+                "direct-recursion-stack-overflow",
+                """
+                (module
+                  (func $recurse
+                    call $recurse)
+                  (func (export "run")
+                    call $recurse))
+                """);
+            using var store = new Store(engine);
+            using var linker = new Linker(engine);
+            var instance = linker.Instantiate(store, module);
+            var run = instance.GetAction("run");
+            run.Should().NotBeNull();
+
+            Action invoke = () => run!();
+            invoke.Should().Throw<TrapException>().Which.Message.Should().Contain("call stack exhausted");
         }
 
         [Fact]
@@ -433,6 +658,116 @@ namespace Wasmtime.Tests
                 workerResolved.Should().Be(1);
                 globalRead.Should().Be(17);
             }
+        }
+
+        private static void ExecuteWorkerBootstrapStackProbe()
+        {
+            using var config = new Config()
+                .WithMaximumStackSize(64 * 1024);
+            using var engine = new Engine(config);
+            using var module = Module.FromText(
+                engine,
+                "threaded-per-store-stack-overflow",
+                """
+                (module
+                  (import "env" "spawn" (func $spawn (param i32 i32) (result i32)))
+                  (import "env" "wait_worker" (func $wait_worker (result i32)))
+                  (table (export "__indirect_function_table") 4096 funcref)
+                  (elem (i32.const 3751) $kfs_thread_start)
+
+                  (func $kfs_sem_down (param i32) (result i32)
+                    local.get 0
+                    call $lkl_start_kernel)
+
+                  (func $lkl_start_kernel (param i32) (result i32)
+                    local.get 0
+                    call $kfs_sem_down)
+
+                  (func $kfs_thread_start (param i32) (result i32)
+                    local.get 0
+                    call $kfs_sem_down)
+
+                  (func (export "run") (result i32)
+                    i32.const 3751
+                    i32.const 0
+                    call $spawn
+                    drop
+                    call $wait_worker))
+                """);
+
+            using var primaryStore = new Store(engine);
+            using var primaryLinker = new Linker(engine);
+            using var workerCompleted = new ManualResetEventSlim(false);
+
+            TrapException? workerTrap = null;
+            Exception? workerException = null;
+
+            primaryLinker.DefineFunction("env", "spawn", (int startRoutine, int startArg) =>
+            {
+                var thread = new Thread(() =>
+                {
+                    try
+                    {
+                        using var workerStore = new Store(engine);
+                        using var workerLinker = new Linker(engine);
+
+                        workerLinker.DefineFunction("env", "spawn", (int _, int __) => 0);
+                        workerLinker.DefineFunction("env", "wait_worker", () => 0);
+
+                        var workerInstance = workerLinker.Instantiate(workerStore, module);
+                        var workerTable = workerInstance.GetTable("__indirect_function_table");
+                        var start = workerTable?.GetElement(unchecked((uint)startRoutine)) as Function;
+                        start.Should().NotBeNull("table entry {0} should resolve to kfs_thread_start", startRoutine);
+
+                        var startFunc = start!.WrapFunc<int, int>();
+                        startFunc.Should().NotBeNull();
+                        _ = startFunc!(startArg);
+                    }
+                    catch (TrapException ex)
+                    {
+                        workerTrap = ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        workerException = ex;
+                    }
+                    finally
+                    {
+                        workerCompleted.Set();
+                    }
+                })
+                {
+                    IsBackground = true,
+                    Name = "wasmtime-per-thread-table-divergence"
+                };
+
+                thread.Start();
+                return 0;
+            });
+
+            primaryLinker.DefineFunction("env", "wait_worker", () =>
+            {
+                workerCompleted.Wait(TimeSpan.FromSeconds(3))
+                    .Should()
+                    .BeTrue("the worker thread should complete");
+                return 0;
+            });
+
+            var primaryInstance = primaryLinker.Instantiate(primaryStore, module);
+            var run = primaryInstance.GetFunction("run")!.WrapFunc<int>();
+            run.Should().NotBeNull();
+
+            var result = run!();
+            result.Should().Be(0);
+
+            workerCompleted.Wait(TimeSpan.FromSeconds(2))
+                .Should()
+                .BeTrue("the worker thread should complete");
+
+            workerException.Should().BeNull();
+            workerTrap.Should().NotBeNull("the recursive bootstrap entry should trap in worker execution");
+            workerTrap!.Message.Should().Contain("call stack exhausted");
+            workerTrap.Message.Should().Contain("kfs_thread_start");
         }
     }
 }
