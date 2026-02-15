@@ -761,10 +761,15 @@ namespace Wasmtime
 
         private static bool LooksLikeMemoryTypeCompatibilityError(WasmtimeException exception)
         {
-            return (exception.Message.Contains("memory minimum size", StringComparison.Ordinal) &&
-                    exception.Message.Contains("exceeds memory limits", StringComparison.Ordinal)) ||
-                   exception.Message.Contains("shared memory must have the `shared` flag enabled", StringComparison.Ordinal) ||
-                   exception.Message.Contains("mmap failed to reserve", StringComparison.Ordinal);
+            return (ContainsOrdinal(exception.Message, "memory minimum size") &&
+                    ContainsOrdinal(exception.Message, "exceeds memory limits")) ||
+                   ContainsOrdinal(exception.Message, "shared memory must have the `shared` flag enabled") ||
+                   ContainsOrdinal(exception.Message, "mmap failed to reserve");
+        }
+
+        private static bool ContainsOrdinal(string source, string value)
+        {
+            return source.IndexOf(value, StringComparison.Ordinal) >= 0;
         }
 
         private static bool MatchesRequestedSharedMemoryType(
