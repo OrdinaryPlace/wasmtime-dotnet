@@ -51,23 +51,87 @@ namespace Wasmtime
             Is64Bit = is64Bit;
             IsShared = true;
 
-            var typeHandle = Memory.Native.wasmtime_memorytype_new((ulong)minimum, true, (ulong)maximum.Value, is64Bit, true);
-            try
+            // Prefer the default memory type creation path. Some native builds
+            // have observed ABI drift for bool marshalling and/or bool argument
+            // ordering in `wasmtime_memorytype_new`, so retry with compatible
+            // call signatures when shared-memory creation rejects the type.
+            var memoryTypeFactories = new Func<IntPtr>[]
             {
-                var error = Native.wasmtime_sharedmemory_new(engine.NativeHandle, typeHandle, out var memory);
-                GC.KeepAlive(engine);
+                () => Memory.Native.wasmtime_memorytype_new((ulong)minimum, true, (ulong)maximum.Value, is64Bit, true),
+                () => MemoryTypeCompatNative.wasmtime_memorytype_new_byte(
+                    (ulong)minimum,
+                    1,
+                    (ulong)maximum.Value,
+                    is64Bit ? (byte)1 : (byte)0,
+                    1),
+                () => MemoryTypeCompatNative.wasmtime_memorytype_new_byte_swapped(
+                    (ulong)minimum,
+                    1,
+                    (ulong)maximum.Value,
+                    is64Bit ? (byte)1 : (byte)0,
+                    1),
+            };
 
-                if (error != IntPtr.Zero)
+            var sharedMemoryHandle = IntPtr.Zero;
+            WasmtimeException? lastCompatibilityError = null;
+
+            for (var attempt = 0; attempt < memoryTypeFactories.Length; attempt++)
+            {
+                var typeHandle = memoryTypeFactories[attempt]();
+                try
                 {
-                    throw WasmtimeException.FromOwnedError(error);
+                    var error = Native.wasmtime_sharedmemory_new(engine.NativeHandle, typeHandle, out var memory);
+                    GC.KeepAlive(engine);
+
+                    if (error == IntPtr.Zero)
+                    {
+                        if (!MatchesRequestedSharedMemoryType(memory, minimum, maximum.Value, is64Bit))
+                        {
+                            Native.wasmtime_sharedmemory_delete(memory);
+                            lastCompatibilityError = new WasmtimeException("Created shared memory type does not match the requested limits.");
+                            continue;
+                        }
+
+                        sharedMemoryHandle = memory;
+                        break;
+                    }
+
+                    var sharedMemoryError = WasmtimeException.FromOwnedError(error);
+                    if (LooksLikeMemoryTypeCompatibilityError(sharedMemoryError))
+                    {
+                        lastCompatibilityError = sharedMemoryError;
+
+                        if (attempt < memoryTypeFactories.Length - 1)
+                        {
+                            continue;
+                        }
+
+                        break;
+                    }
+
+                    throw sharedMemoryError;
+                }
+                finally
+                {
+                    // Avoid deleting compatibility-created type handles here.
+                    // Some native builds reject mismatched memory types but can
+                    // still crash when deleting those transient handles.
+                }
+            }
+
+            if (sharedMemoryHandle == IntPtr.Zero)
+            {
+                if (lastCompatibilityError is not null &&
+                    TryCreateSharedMemoryViaSyntheticModule(engine, minimum, maximum.Value, is64Bit, out sharedMemoryHandle))
+                {
+                    handle = new Handle(sharedMemoryHandle);
+                    return;
                 }
 
-                handle = new Handle(memory);
+                throw lastCompatibilityError ?? new WasmtimeException("Failed to create shared memory.");
             }
-            finally
-            {
-                Memory.Native.wasm_memorytype_delete(typeHandle);
-            }
+
+            handle = new Handle(sharedMemoryHandle);
         }
 
         internal SharedMemory(IntPtr sharedMemory)
@@ -625,10 +689,16 @@ namespace Wasmtime
             public static extern IntPtr wasmtime_sharedmemory_new(Engine.Handle engine, IntPtr typeHandle, out IntPtr memory);
 
             [DllImport(Engine.LibraryName)]
+            public static extern IntPtr wasmtime_sharedmemory_clone(Handle memory);
+
+            [DllImport(Engine.LibraryName)]
             public static extern void wasmtime_sharedmemory_delete(IntPtr memory);
 
             [DllImport(Engine.LibraryName)]
             public static extern IntPtr wasmtime_sharedmemory_type(Handle memory);
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_sharedmemory_type")]
+            public static extern IntPtr wasmtime_sharedmemory_type_raw(IntPtr memory);
 
             [DllImport(Engine.LibraryName)]
             public static unsafe extern byte* wasmtime_sharedmemory_data(Handle memory);
@@ -641,6 +711,158 @@ namespace Wasmtime
 
             [DllImport(Engine.LibraryName)]
             public static extern IntPtr wasmtime_sharedmemory_grow(Handle memory, ulong delta, out ulong prev);
+        }
+
+        private static bool TryCreateSharedMemoryViaSyntheticModule(
+            Engine engine,
+            long minimum,
+            long maximum,
+            bool is64Bit,
+            out IntPtr sharedMemoryHandle)
+        {
+            sharedMemoryHandle = IntPtr.Zero;
+
+            try
+            {
+                var memoryTypeExpression = is64Bit
+                    ? $"i64 {minimum} {maximum} shared"
+                    : $"{minimum} {maximum} shared";
+
+                var moduleText = $"(module (memory (export \"mem\") {memoryTypeExpression}))";
+
+                using var module = Module.FromText(engine, "shared-memory-constructor-fallback", moduleText);
+                using var store = new Store(engine);
+                using var linker = new Linker(engine);
+                var instance = linker.Instantiate(store, module);
+
+                var exported = instance.GetSharedMemory("mem");
+                if (exported is null)
+                {
+                    return false;
+                }
+
+                using (exported)
+                {
+                    var clone = Native.wasmtime_sharedmemory_clone(exported.handle);
+                    if (clone == IntPtr.Zero)
+                    {
+                        return false;
+                    }
+
+                    sharedMemoryHandle = clone;
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool LooksLikeMemoryTypeCompatibilityError(WasmtimeException exception)
+        {
+            return (exception.Message.Contains("memory minimum size", StringComparison.Ordinal) &&
+                    exception.Message.Contains("exceeds memory limits", StringComparison.Ordinal)) ||
+                   exception.Message.Contains("shared memory must have the `shared` flag enabled", StringComparison.Ordinal) ||
+                   exception.Message.Contains("mmap failed to reserve", StringComparison.Ordinal);
+        }
+
+        private static bool MatchesRequestedSharedMemoryType(
+            IntPtr sharedMemoryHandle,
+            long expectedMinimum,
+            long expectedMaximum,
+            bool expectedIs64Bit)
+        {
+            var typeHandle = Native.wasmtime_sharedmemory_type_raw(sharedMemoryHandle);
+            if (typeHandle == IntPtr.Zero)
+            {
+                return false;
+            }
+
+            try
+            {
+                if (Memory.Native.wasmtime_memorytype_minimum(typeHandle) != (ulong)expectedMinimum)
+                {
+                    return false;
+                }
+
+                if (!Memory.Native.wasmtime_memorytype_maximum(typeHandle, out var actualMaximum))
+                {
+                    return false;
+                }
+
+                if (actualMaximum != (ulong)expectedMaximum)
+                {
+                    return false;
+                }
+
+                if (Memory.Native.wasmtime_memorytype_is64(typeHandle) != expectedIs64Bit)
+                {
+                    return false;
+                }
+
+                if (!Memory.Native.wasmtime_memorytype_isshared(typeHandle))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            finally
+            {
+                Memory.Native.wasm_memorytype_delete(typeHandle);
+            }
+        }
+
+        private static class MemoryTypeCompatNative
+        {
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_memorytype_new")]
+            private static extern IntPtr wasmtime_memorytype_new_native(
+                ulong min,
+                byte max_present,
+                ulong max,
+                byte is_64,
+                byte shared);
+
+            public static IntPtr wasmtime_memorytype_new_byte(
+                ulong min,
+                byte max_present,
+                ulong max,
+                byte is_64,
+                byte shared)
+            {
+                var typeHandle = wasmtime_memorytype_new_native(min, max_present, max, is_64, shared);
+                if (typeHandle == IntPtr.Zero)
+                {
+                    throw new WasmtimeException("Failed to create memory type.");
+                }
+
+                return typeHandle;
+            }
+
+            [DllImport(Engine.LibraryName, EntryPoint = "wasmtime_memorytype_new")]
+            private static extern IntPtr wasmtime_memorytype_new_native_swapped(
+                ulong min,
+                byte max_present,
+                ulong max,
+                byte shared,
+                byte is_64);
+
+            public static IntPtr wasmtime_memorytype_new_byte_swapped(
+                ulong min,
+                byte max_present,
+                ulong max,
+                byte is_64,
+                byte shared)
+            {
+                var typeHandle = wasmtime_memorytype_new_native_swapped(min, max_present, max, shared, is_64);
+                if (typeHandle == IntPtr.Zero)
+                {
+                    throw new WasmtimeException("Failed to create memory type.");
+                }
+
+                return typeHandle;
+            }
         }
 
         private readonly Handle handle;
