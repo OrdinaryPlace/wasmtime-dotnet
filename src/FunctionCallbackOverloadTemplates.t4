@@ -4,7 +4,12 @@
 
 // Suppress the "not used" warning when this file is referenced but the function is not called.
 #pragma warning disable CS8321 // Local function is declared but never used
-void GenerateCallbackContent(bool hasCaller, int resultCount, int parameterCount, bool storeAvailable) {
+void GenerateCallbackContent(
+    bool hasCaller,
+    int resultCount,
+    int parameterCount,
+    bool storeAvailable,
+    bool cooperativeYieldAfterCallback) {
 #pragma warning restore CS8321 // Local function is declared but never used
 #>
                     try
@@ -75,6 +80,14 @@ void GenerateCallbackContent(bool hasCaller, int resultCount, int parameterCount
     }
     #>
 
+<# if (cooperativeYieldAfterCallback)
+{
+#>
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
+<# 
+}
+#>
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)

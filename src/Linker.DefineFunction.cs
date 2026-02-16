@@ -55,6 +55,8 @@ namespace Wasmtime
                             );
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -155,6 +157,8 @@ namespace Wasmtime
                             convT.Unbox(storeContext, store, args_and_results[0]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -257,6 +261,8 @@ namespace Wasmtime
                             convT2.Unbox(storeContext, store, args_and_results[1]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -361,6 +367,8 @@ namespace Wasmtime
                             convT3.Unbox(storeContext, store, args_and_results[2]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -467,6 +475,8 @@ namespace Wasmtime
                             convT4.Unbox(storeContext, store, args_and_results[3]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -575,6 +585,8 @@ namespace Wasmtime
                             convT5.Unbox(storeContext, store, args_and_results[4]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -685,6 +697,8 @@ namespace Wasmtime
                             convT6.Unbox(storeContext, store, args_and_results[5]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -797,6 +811,8 @@ namespace Wasmtime
                             convT7.Unbox(storeContext, store, args_and_results[6]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -911,6 +927,8 @@ namespace Wasmtime
                             convT8.Unbox(storeContext, store, args_and_results[7]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1027,6 +1045,8 @@ namespace Wasmtime
                             convT9.Unbox(storeContext, store, args_and_results[8]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1145,6 +1165,8 @@ namespace Wasmtime
                             convT10.Unbox(storeContext, store, args_and_results[9]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1265,6 +1287,8 @@ namespace Wasmtime
                             convT11.Unbox(storeContext, store, args_and_results[10]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1387,6 +1411,8 @@ namespace Wasmtime
                             convT12.Unbox(storeContext, store, args_and_results[11]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1488,6 +1514,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1590,6 +1618,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1694,6 +1724,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1800,6 +1832,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1908,6 +1942,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2018,6 +2054,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2130,6 +2168,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2244,6 +2284,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2360,6 +2402,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2478,6 +2522,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2598,6 +2644,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2720,6 +2768,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2844,6 +2894,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2947,6 +2999,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3051,6 +3105,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3157,6 +3213,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3265,6 +3323,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3375,6 +3435,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3487,6 +3549,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3601,6 +3665,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3717,6 +3783,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3835,6 +3903,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3955,6 +4025,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4077,6 +4149,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4201,6 +4275,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4327,6 +4403,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4432,6 +4510,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4538,6 +4618,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4646,6 +4728,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4756,6 +4840,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4868,6 +4954,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4982,6 +5070,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5098,6 +5188,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5216,6 +5308,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5336,6 +5430,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5458,6 +5554,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5582,6 +5680,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5708,6 +5808,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5836,6 +5938,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5943,6 +6047,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6051,6 +6157,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6161,6 +6269,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6273,6 +6383,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6387,6 +6499,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6503,6 +6617,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6621,6 +6737,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6741,6 +6859,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6863,6 +6983,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6987,6 +7109,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7113,6 +7237,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7241,6 +7367,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7371,6 +7499,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7470,6 +7600,8 @@ namespace Wasmtime
                             caller);
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7571,6 +7703,8 @@ namespace Wasmtime
                             convT.Unbox(storeContext, store, args_and_results[0]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7674,6 +7808,8 @@ namespace Wasmtime
                             convT2.Unbox(storeContext, store, args_and_results[1]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7779,6 +7915,8 @@ namespace Wasmtime
                             convT3.Unbox(storeContext, store, args_and_results[2]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7886,6 +8024,8 @@ namespace Wasmtime
                             convT4.Unbox(storeContext, store, args_and_results[3]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7995,6 +8135,8 @@ namespace Wasmtime
                             convT5.Unbox(storeContext, store, args_and_results[4]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8106,6 +8248,8 @@ namespace Wasmtime
                             convT6.Unbox(storeContext, store, args_and_results[5]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8219,6 +8363,8 @@ namespace Wasmtime
                             convT7.Unbox(storeContext, store, args_and_results[6]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8334,6 +8480,8 @@ namespace Wasmtime
                             convT8.Unbox(storeContext, store, args_and_results[7]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8451,6 +8599,8 @@ namespace Wasmtime
                             convT9.Unbox(storeContext, store, args_and_results[8]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8570,6 +8720,8 @@ namespace Wasmtime
                             convT10.Unbox(storeContext, store, args_and_results[9]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8691,6 +8843,8 @@ namespace Wasmtime
                             convT11.Unbox(storeContext, store, args_and_results[10]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8814,6 +8968,8 @@ namespace Wasmtime
                             convT12.Unbox(storeContext, store, args_and_results[11]));
 
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8915,6 +9071,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9018,6 +9176,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9123,6 +9283,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9230,6 +9392,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9339,6 +9503,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9450,6 +9616,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9563,6 +9731,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9678,6 +9848,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9795,6 +9967,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9914,6 +10088,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10035,6 +10211,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10158,6 +10336,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10283,6 +10463,8 @@ namespace Wasmtime
 
                         convTResult.Box(storeContext, store, ref args_and_results[0], result);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10386,6 +10568,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10491,6 +10675,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10598,6 +10784,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10707,6 +10895,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10818,6 +11008,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10931,6 +11123,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11046,6 +11240,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11163,6 +11359,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11282,6 +11480,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11403,6 +11603,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11526,6 +11728,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11651,6 +11855,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11778,6 +11984,8 @@ namespace Wasmtime
                         convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11883,6 +12091,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11990,6 +12200,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12099,6 +12311,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12210,6 +12424,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12323,6 +12539,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12438,6 +12656,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12555,6 +12775,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12674,6 +12896,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12795,6 +13019,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12918,6 +13144,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13043,6 +13271,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13170,6 +13400,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13299,6 +13531,8 @@ namespace Wasmtime
                         convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13406,6 +13640,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13515,6 +13751,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13626,6 +13864,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13739,6 +13979,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13854,6 +14096,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13971,6 +14215,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14090,6 +14336,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14211,6 +14459,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14334,6 +14584,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14459,6 +14711,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14586,6 +14840,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14715,6 +14971,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14846,6 +15104,8 @@ namespace Wasmtime
                         convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
                         convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
                         
+                        _ = global::System.Threading.Thread.Yield();
+                        global::System.Threading.Thread.Sleep(0);
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
