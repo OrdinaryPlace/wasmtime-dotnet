@@ -129,6 +129,167 @@ namespace Wasmtime.Tests
         }
 
         [Fact]
+        public void ItAllowsPthreadWaitFlowWithoutCrossThreadStoreFaults()
+        {
+            using var config = new Config()
+                .WithWasmThreads(true)
+                .WithSharedMemory(true);
+            using var engine = new Engine(config);
+            using var module = Module.FromText(
+                engine,
+                "pthread-wait-isolated-worker-store",
+                """
+                (module
+                  (import "env" "spawn" (func $spawn (param i32 i32) (result i32)))
+                  (import "env" "mem" (memory 1 1 shared))
+
+                  (func (export "kfs_thread_start") (param i32) (result i32)
+                    i32.const 0
+                    i32.const 0
+                    i32.store
+                    i32.const 0)
+
+                  (func $wait_for_zero (param $addr i32) (param $retries i32) (result i32)
+                    (local $remaining i32)
+                    local.get $retries
+                    local.set $remaining
+                    block $timeout
+                      loop $retry
+                        local.get $addr
+                        i32.load
+                        i32.eqz
+                        if
+                          i32.const 0
+                          return
+                        end
+
+                        local.get $remaining
+                        i32.eqz
+                        br_if $timeout
+
+                        local.get $remaining
+                        i32.const 1
+                        i32.sub
+                        local.set $remaining
+                        br $retry
+                      end
+                    end
+                    i32.const -1)
+
+                  (func (export "kfs_init") (result i32)
+                    i32.const 0
+                    i32.const 1
+                    i32.store
+
+                    i32.const 3751
+                    i32.const 0
+                    call $spawn
+                    drop
+
+                    i32.const 0
+                    i32.const 5000000
+                    call $wait_for_zero))
+                """);
+
+            using var sharedMemory = new SharedMemory(engine, 1, 1);
+            using var primaryStore = new Store(engine);
+            using var primaryLinker = new Linker(engine);
+            using var workQueue = new BlockingCollection<(int StartRoutine, int StartArg)>();
+            using var workerReady = new ManualResetEventSlim(false);
+            using var workerCompleted = new ManualResetEventSlim(false);
+            using var workerExited = new ManualResetEventSlim(false);
+
+            const int expectedStartRoutine = 3751;
+            Exception? workerException = null;
+            var workerResult = int.MinValue;
+
+            var workerThread = new Thread(() =>
+            {
+                try
+                {
+                    using var workerStore = new Store(engine);
+                    using var workerLinker = new Linker(engine);
+                    workerLinker.Define("env", "mem", sharedMemory, workerStore);
+                    workerLinker.DefineFunction("env", "spawn", (int _, int __) => 0);
+
+                    var workerInstance = workerLinker.Instantiate(workerStore, module);
+                    var workerStart = workerInstance.GetFunction("kfs_thread_start")!.WrapFunc<int, int>();
+                    workerStart.Should().NotBeNull();
+                    workerReady.Set();
+
+                    foreach (var (startRoutine, startArg) in workQueue.GetConsumingEnumerable())
+                    {
+                        try
+                        {
+                            startRoutine.Should().Be(expectedStartRoutine, "spawn should hand off kfs_thread_start");
+                            workerResult = workerStart!(startArg);
+                        }
+                        catch (Exception ex)
+                        {
+                            workerException = ex;
+                        }
+                        finally
+                        {
+                            workerCompleted.Set();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    workerException = ex;
+                    workerReady.Set();
+                    workerCompleted.Set();
+                }
+                finally
+                {
+                    workerExited.Set();
+                }
+            })
+            {
+                IsBackground = true,
+                Name = "wasmtime-pthread-worker-isolated-store"
+            };
+
+            workerThread.Start();
+
+            primaryLinker.Define("env", "mem", sharedMemory, primaryStore);
+            primaryLinker.DefineFunction("env", "spawn", (int startRoutine, int startArg) =>
+            {
+                workerReady.Wait(TimeSpan.FromSeconds(3))
+                    .Should()
+                    .BeTrue("worker runtime should initialize before spawn handoff");
+
+                workQueue.Add((startRoutine, startArg));
+                return 0;
+            });
+
+            var primaryInstance = primaryLinker.Instantiate(primaryStore, module);
+            var kfsInit = primaryInstance.GetFunction<int>("kfs_init");
+            kfsInit.Should().NotBeNull();
+
+            int result;
+            try
+            {
+                result = kfsInit!();
+            }
+            finally
+            {
+                workQueue.CompleteAdding();
+                workerExited.Wait(TimeSpan.FromSeconds(3))
+                    .Should()
+                    .BeTrue("worker thread should shut down after work queue completion");
+            }
+
+            result.Should().Be(0, "kfs_init should observe worker progress from an isolated worker Store");
+            workerCompleted.Wait(TimeSpan.FromSeconds(3))
+                .Should()
+                .BeTrue("worker thread should complete");
+            workerException.Should().BeNull("worker startup should not trigger cross-thread Store access failures");
+            workerResult.Should().Be(0, "worker start routine should finish in the worker Store");
+            sharedMemory.ReadInt32(0).Should().Be(0, "worker should publish completion by clearing the shared lock word");
+        }
+
+        [Fact]
         public void ItSupportsThreadedExecutionWithOneStorePerThread()
         {
             using var engine = new Engine();

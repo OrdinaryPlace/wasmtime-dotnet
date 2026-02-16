@@ -196,10 +196,10 @@ The .NET embedding of Wasmtime enables .NET code to instantiate WebAssembly modu
     />
   </Target>
 
-   <Target Name="CopyWasmtimeLibrary" BeforeTargets="BeforeBuild">
+  <Target Name="CopyWasmtimeLibrary" BeforeTargets="BeforeBuild">
     <ItemGroup>
       <Content Condition="'%(Wasmtime.Copy)'=='true'" Include="$(BaseIntermediateOutputPath)$(ReleaseFileNameBase)-%(Wasmtime.Arch)-%(Wasmtime.OS)-c-api/lib/%(Wasmtime.LibraryFilename)">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         <Link>%(Wasmtime.LibraryFilename)</Link>
       </Content>
     </ItemGroup>

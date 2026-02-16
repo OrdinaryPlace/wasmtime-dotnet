@@ -84,12 +84,21 @@ For true parallel execution:
 2. Create one `Store` per worker thread.
 3. Coordinate between stores with `SharedMemory` plus host message passing.
 
+`StoreWorker<TState>` can host a dedicated worker `Store` and dispatch work to it:
+
 ```csharp
 using var config = new Config()
     .WithWasmThreads(true)
     .WithSharedMemory(true);
 using var engine = new Engine(config);
-using var module = Module.FromText(engine, "m", "(module (import \"env\" \"mem\" (memory 1 1 shared)))");
+using var module = Module.FromText(
+    engine,
+    "m",
+    """
+    (module
+      (import "env" "mem" (memory 1 1 shared))
+      (func (export "worker_entry")))
+    """);
 using var sharedMemory = new SharedMemory(engine, 1, 1);
 
 using var producerStore = new Store(engine);
@@ -99,4 +108,15 @@ using var consumerLinker = new Linker(engine);
 
 producerLinker.Define("env", "mem", sharedMemory, producerStore);
 consumerLinker.Define("env", "mem", sharedMemory, consumerStore);
+
+using var worker = new StoreWorker<Action>(
+    engine,
+    (workerStore, workerLinker) =>
+    {
+        workerLinker.Define("env", "mem", sharedMemory, workerStore);
+        var workerInstance = workerLinker.Instantiate(workerStore, module);
+        return workerInstance.GetAction("worker_entry")!;
+    });
+
+worker.Invoke((_, workerEntry) => workerEntry());
 ```
