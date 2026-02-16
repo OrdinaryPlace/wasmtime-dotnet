@@ -827,7 +827,7 @@ namespace Wasmtime
                 // occured, which will then clear this field.
                 CallbackErrorCause = ex is WasmtimeException wasmtimeException ? wasmtimeException.InnerException : ex;
 
-                var bytes = Encoding.UTF8.GetBytes(ex.Message);
+                var bytes = Encoding.UTF8.GetBytes(BuildTrapMessage(ex));
 
                 fixed (byte* ptr = bytes)
                 {
@@ -847,6 +847,24 @@ namespace Wasmtime
                 // Satisfy the control-flow analyzer; this line is never reached.
                 throw;
             }
+        }
+
+        private static string BuildTrapMessage(Exception ex)
+        {
+            if (ex.Message.Contains(Store.ConcurrentStoreAccessMessage, StringComparison.Ordinal))
+            {
+                return ex.Message;
+            }
+
+            for (var inner = ex.InnerException; inner is not null; inner = inner.InnerException)
+            {
+                if (inner.Message.Contains(Store.ConcurrentStoreAccessMessage, StringComparison.Ordinal))
+                {
+                    return $"{ex.Message} {inner.GetType().Name}: {inner.Message}";
+                }
+            }
+
+            return ex.Message;
         }
 
         internal static class Native

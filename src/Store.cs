@@ -509,10 +509,13 @@ namespace Wasmtime
             }
         }
 
+        internal const string ConcurrentStoreAccessMessage =
+            "Concurrent access to a Store from multiple threads is not supported.";
+
         private static InvalidOperationException CreateConcurrentStoreAccessException()
         {
             return new InvalidOperationException(
-                "Concurrent access to a Store from multiple threads is not supported. " +
+                ConcurrentStoreAccessMessage + " " +
                 "Use one Store per thread or serialize access so only one thread uses a Store at a time.");
         }
 

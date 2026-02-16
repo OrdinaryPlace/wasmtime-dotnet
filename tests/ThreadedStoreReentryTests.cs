@@ -208,7 +208,7 @@ namespace Wasmtime.Tests
                 if (workerException is not null)
                 {
                     throw new InvalidOperationException(
-                        $"pthread worker failed while waiting on cond={condPtr} mutex={mutexPtr}. tid=2 startRoutine={expectedStartRoutine} {workerException.GetType().Name}: {workerException.Message}",
+                        $"pthread worker failed while waiting on cond={condPtr} mutex={mutexPtr}. tid=2 startRoutine={expectedStartRoutine}",
                         workerException);
                 }
 
@@ -226,14 +226,13 @@ namespace Wasmtime.Tests
 
             var exception = invoke.Should().Throw<WasmtimeException>().Which;
             exception.Message.Should().Contain("pthread worker failed while waiting on cond=9775976 mutex=9775952");
-            exception.Message.Should().Contain("Concurrent access to a Store from multiple threads is not supported");
+            exception.Message.Should().Contain(Store.ConcurrentStoreAccessMessage);
 
             workerException
                 .Should()
                 .BeOfType<InvalidOperationException>()
                 .Which.Message
-                .Should()
-                .Contain("Concurrent access to a Store from multiple threads is not supported");
+                .Should().Contain(Store.ConcurrentStoreAccessMessage);
         }
 
         [Fact]
