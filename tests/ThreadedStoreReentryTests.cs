@@ -129,7 +129,7 @@ namespace Wasmtime.Tests
         }
 
         [Fact]
-        public void ItSurfacesWasmtimeErrorWhenPthreadWaitObservesWorkerStoreContention()
+        public void ItAllowsPthreadWaitFlowWithoutCrossThreadStoreFaults()
         {
             using var engine = new Engine();
             using var module = Module.FromText(
@@ -208,7 +208,7 @@ namespace Wasmtime.Tests
                 if (workerException is not null)
                 {
                     throw new InvalidOperationException(
-                        $"pthread worker failed while waiting on cond={condPtr} mutex={mutexPtr}. tid=2 startRoutine={expectedStartRoutine}",
+                        $"pthread worker failed while waiting on cond={condPtr} mutex={mutexPtr}. tid=2 startRoutine={expectedStartRoutine} {workerException.GetType().Name}: {workerException.Message}",
                         workerException);
                 }
 
@@ -222,17 +222,14 @@ namespace Wasmtime.Tests
             var kfsInit = instance.GetFunction("kfs_init")!.WrapFunc<int>();
             kfsInit.Should().NotBeNull();
 
-            Action invoke = () => _ = kfsInit!();
+            var result = kfsInit!();
+            result.Should().Be(0, "kfs_init should not fail when pthread wait runs while worker startup executes");
 
-            var exception = invoke.Should().Throw<WasmtimeException>().Which;
-            exception.Message.Should().Contain("pthread worker failed while waiting on cond=9775976 mutex=9775952");
-            exception.Message.Should().Contain(Store.ConcurrentStoreAccessMessage);
-
-            workerException
+            workerCompleted.Wait(TimeSpan.FromSeconds(3))
                 .Should()
-                .BeOfType<InvalidOperationException>()
-                .Which.Message
-                .Should().Contain(Store.ConcurrentStoreAccessMessage);
+                .BeTrue("worker thread should complete");
+
+            workerException.Should().BeNull("worker startup should not trigger cross-thread Store access failures");
         }
 
         [Fact]
