@@ -98,6 +98,8 @@ namespace Wasmtime
 
     internal interface IValueRawConverter<T>
     {
+        bool RequiresStoreContext { get; }
+
         T? Unbox(StoreContext storeContext, Store store, in ValueRaw valueRaw);
 
         void Box(StoreContext storeContext, Store store, ref ValueRaw valueRaw, T value);
@@ -106,6 +108,8 @@ namespace Wasmtime
     internal class Int32ValueRawConverter : IValueRawConverter<int>
     {
         public static readonly Int32ValueRawConverter Instance = new();
+
+        public bool RequiresStoreContext => false;
 
         private Int32ValueRawConverter()
         {
@@ -131,6 +135,8 @@ namespace Wasmtime
     {
         public static readonly Int64ValueRawConverter Instance = new();
 
+        public bool RequiresStoreContext => false;
+
         private Int64ValueRawConverter()
         {
         }
@@ -149,6 +155,8 @@ namespace Wasmtime
     internal class Float32ValueRawConverter : IValueRawConverter<float>
     {
         public static readonly Float32ValueRawConverter Instance = new();
+
+        public bool RequiresStoreContext => false;
 
         private Float32ValueRawConverter()
         {
@@ -170,6 +178,8 @@ namespace Wasmtime
     {
         public static readonly Float64ValueRawConverter Instance = new();
 
+        public bool RequiresStoreContext => false;
+
         private Float64ValueRawConverter()
         {
         }
@@ -189,6 +199,8 @@ namespace Wasmtime
     {
         public static readonly V128ValueRawConverter Instance = new();
 
+        public bool RequiresStoreContext => false;
+
         private V128ValueRawConverter()
         {
         }
@@ -207,6 +219,8 @@ namespace Wasmtime
     internal class FuncRefValueRawConverter : IValueRawConverter<Function>
     {
         public static readonly FuncRefValueRawConverter Instance = new();
+
+        public bool RequiresStoreContext => true;
 
         private FuncRefValueRawConverter()
         {
@@ -249,6 +263,8 @@ namespace Wasmtime
     internal class GenericValueRawConverter<T> : IValueRawConverter<T>
     {
         public static readonly GenericValueRawConverter<T> Instance = new();
+
+        public bool RequiresStoreContext => true;
 
         private GenericValueRawConverter()
         {
@@ -339,6 +355,10 @@ namespace Wasmtime
         private readonly IValueRawConverter<T1> Converter1 = ValueRaw.Converter<T1>();
         private readonly IValueRawConverter<T2> Converter2 = ValueRaw.Converter<T2>();
 
+        public bool RequiresStoreContext =>
+            Converter1.RequiresStoreContext ||
+            Converter2.RequiresStoreContext;
+
         public (T1, T2) Unbox(StoreContext storeContext, Store store, in ValueRaw valueRaw)
         {
             throw new NotSupportedException("Cannot unbox tuple");
@@ -368,6 +388,11 @@ namespace Wasmtime
         private readonly IValueRawConverter<T1> Converter1 = ValueRaw.Converter<T1>();
         private readonly IValueRawConverter<T2> Converter2 = ValueRaw.Converter<T2>();
         private readonly IValueRawConverter<T3> Converter3 = ValueRaw.Converter<T3>();
+
+        public bool RequiresStoreContext =>
+            Converter1.RequiresStoreContext ||
+            Converter2.RequiresStoreContext ||
+            Converter3.RequiresStoreContext;
 
         public (T1, T2, T3) Unbox(StoreContext storeContext, Store store, in ValueRaw valueRaw)
         {
@@ -401,6 +426,12 @@ namespace Wasmtime
         private readonly IValueRawConverter<T2> Converter2 = ValueRaw.Converter<T2>();
         private readonly IValueRawConverter<T3> Converter3 = ValueRaw.Converter<T3>();
         private readonly IValueRawConverter<T4> Converter4 = ValueRaw.Converter<T4>();
+
+        public bool RequiresStoreContext =>
+            Converter1.RequiresStoreContext ||
+            Converter2.RequiresStoreContext ||
+            Converter3.RequiresStoreContext ||
+            Converter4.RequiresStoreContext;
 
         public (T1, T2, T3, T4) Unbox(StoreContext storeContext, Store store, in ValueRaw valueRaw)
         {

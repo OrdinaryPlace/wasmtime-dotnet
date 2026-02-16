@@ -47,16 +47,27 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             );
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -149,16 +160,27 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
-                            convT.Unbox(storeContext, store, args_and_results[0]));
+                            convT.Unbox(storeContext, store!, args_and_results[0]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -252,17 +274,28 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -357,18 +390,29 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -464,19 +508,30 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -573,20 +628,31 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -684,21 +750,32 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -797,22 +874,33 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -912,23 +1000,34 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1029,24 +1128,35 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1148,25 +1258,36 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1269,26 +1390,37 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1392,27 +1524,38 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convT12.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]),
-                            convT12.Unbox(storeContext, store, args_and_results[11]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]),
+                            convT12.Unbox(storeContext, store!, args_and_results[11]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1505,17 +1648,28 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             );
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1609,17 +1763,28 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT.Unbox(storeContext, store, args_and_results[0]));
+                            convT.Unbox(storeContext, store!, args_and_results[0]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1714,18 +1879,29 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1821,19 +1997,30 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -1930,20 +2117,31 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2041,21 +2239,32 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2154,22 +2363,33 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2269,23 +2489,34 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2386,24 +2617,35 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2505,25 +2747,36 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2626,26 +2879,37 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2749,27 +3013,38 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2874,28 +3149,39 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convT12.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]),
-                            convT12.Unbox(storeContext, store, args_and_results[11]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]),
+                            convT12.Unbox(storeContext, store!, args_and_results[11]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -2989,18 +3275,29 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             );
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3095,18 +3392,29 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT.Unbox(storeContext, store, args_and_results[0]));
+                            convT.Unbox(storeContext, store!, args_and_results[0]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3202,19 +3510,30 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3311,20 +3630,31 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3422,21 +3752,32 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3535,22 +3876,33 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3650,23 +4002,34 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3767,24 +4130,35 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -3886,25 +4260,36 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4007,26 +4392,37 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4130,27 +4526,38 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4255,28 +4662,39 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4382,29 +4800,40 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convT12.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]),
-                            convT12.Unbox(storeContext, store, args_and_results[11]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]),
+                            convT12.Unbox(storeContext, store!, args_and_results[11]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4499,19 +4928,30 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             );
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4607,19 +5047,30 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT.Unbox(storeContext, store, args_and_results[0]));
+                            convT.Unbox(storeContext, store!, args_and_results[0]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4716,20 +5167,31 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4827,21 +5289,32 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -4940,22 +5413,33 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5055,23 +5539,34 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5172,24 +5667,35 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5291,25 +5797,36 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5412,26 +5929,37 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5535,27 +6063,38 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5660,28 +6199,39 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5787,29 +6337,40 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -5916,30 +6477,41 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convT12.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]),
-                            convT12.Unbox(storeContext, store, args_and_results[11]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]),
+                            convT12.Unbox(storeContext, store!, args_and_results[11]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6035,20 +6607,31 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             );
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6145,20 +6728,31 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT.Unbox(storeContext, store, args_and_results[0]));
+                            convT.Unbox(storeContext, store!, args_and_results[0]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6256,21 +6850,32 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6369,22 +6974,33 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6484,23 +7100,34 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6601,24 +7228,35 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6720,25 +7358,36 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6841,26 +7490,37 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -6964,27 +7624,38 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7089,28 +7760,39 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7216,29 +7898,40 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7345,30 +8038,41 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7476,31 +8180,42 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = false || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convT12.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]),
-                            convT12.Unbox(storeContext, store, args_and_results[11]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]),
+                            convT12.Unbox(storeContext, store!, args_and_results[11]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7592,16 +8307,27 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller);
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7694,17 +8420,28 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller,
-                            convT.Unbox(storeContext, store, args_and_results[0]));
+                            convT.Unbox(storeContext, store!, args_and_results[0]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7798,18 +8535,29 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -7904,19 +8652,30 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8012,20 +8771,31 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8122,21 +8892,32 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8234,22 +9015,33 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8348,23 +9140,34 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8464,24 +9267,35 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8582,25 +9396,36 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8702,26 +9527,37 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8824,27 +9660,38 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -8948,28 +9795,39 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convT12.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]),
-                            convT12.Unbox(storeContext, store, args_and_results[11]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]),
+                            convT12.Unbox(storeContext, store!, args_and_results[11]));
 
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9062,17 +9920,28 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller);
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9166,18 +10035,29 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT.Unbox(storeContext, store, args_and_results[0]));
+                            convT.Unbox(storeContext, store!, args_and_results[0]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9272,19 +10152,30 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9380,20 +10271,31 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9490,21 +10392,32 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9602,22 +10515,33 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9716,23 +10640,34 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9832,24 +10767,35 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -9950,25 +10896,36 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10070,26 +11027,37 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10192,27 +11160,38 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10316,28 +11295,39 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10442,29 +11432,40 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convT12.RequiresStoreContext || convTResult.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]),
-                            convT12.Unbox(storeContext, store, args_and_results[11]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]),
+                            convT12.Unbox(storeContext, store!, args_and_results[11]));
 
-                        convTResult.Box(storeContext, store, ref args_and_results[0], result);
+                        convTResult.Box(storeContext, store!, ref args_and_results[0], result);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10558,18 +11559,29 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller);
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10664,19 +11676,30 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT.Unbox(storeContext, store, args_and_results[0]));
+                            convT.Unbox(storeContext, store!, args_and_results[0]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10772,20 +11795,31 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10882,21 +11916,32 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -10994,22 +12039,33 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11108,23 +12164,34 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11224,24 +12291,35 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11342,25 +12420,36 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11462,26 +12551,37 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11584,27 +12684,38 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11708,28 +12819,39 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11834,29 +12956,40 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -11962,30 +13095,41 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convT12.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]),
-                            convT12.Unbox(storeContext, store, args_and_results[11]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]),
+                            convT12.Unbox(storeContext, store!, args_and_results[11]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12080,19 +13224,30 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller);
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12188,20 +13343,31 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT.Unbox(storeContext, store, args_and_results[0]));
+                            convT.Unbox(storeContext, store!, args_and_results[0]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12298,21 +13464,32 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12410,22 +13587,33 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12524,23 +13712,34 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12640,24 +13839,35 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12758,25 +13968,36 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -12878,26 +14099,37 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13000,27 +14232,38 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13124,28 +14367,39 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13250,29 +14504,40 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13378,30 +14643,41 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13508,31 +14784,42 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convT12.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]),
-                            convT12.Unbox(storeContext, store, args_and_results[11]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]),
+                            convT12.Unbox(storeContext, store!, args_and_results[11]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13628,20 +14915,31 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller);
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13738,21 +15036,32 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT.Unbox(storeContext, store, args_and_results[0]));
+                            convT.Unbox(storeContext, store!, args_and_results[0]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13850,22 +15159,33 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -13964,23 +15284,34 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14080,24 +15411,35 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14198,25 +15540,36 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14318,26 +15671,37 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14440,27 +15804,38 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14564,28 +15939,39 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14690,29 +16076,40 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14818,30 +16215,41 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -14948,31 +16356,42 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)
@@ -15080,32 +16499,43 @@ namespace Wasmtime
                 {
                     try
                     {
-                        var caller = new Caller(callerPtr);
-                        var storeContext = caller.context;
-                        var store = caller.store;
+                        var requiresCallerContext = true || convT1.RequiresStoreContext || convT2.RequiresStoreContext || convT3.RequiresStoreContext || convT4.RequiresStoreContext || convT5.RequiresStoreContext || convT6.RequiresStoreContext || convT7.RequiresStoreContext || convT8.RequiresStoreContext || convT9.RequiresStoreContext || convT10.RequiresStoreContext || convT11.RequiresStoreContext || convT12.RequiresStoreContext || convTResult1.RequiresStoreContext || convTResult2.RequiresStoreContext || convTResult3.RequiresStoreContext || convTResult4.RequiresStoreContext;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 
                         var result = callback(
                             caller,
-                            convT1.Unbox(storeContext, store, args_and_results[0]),
-                            convT2.Unbox(storeContext, store, args_and_results[1]),
-                            convT3.Unbox(storeContext, store, args_and_results[2]),
-                            convT4.Unbox(storeContext, store, args_and_results[3]),
-                            convT5.Unbox(storeContext, store, args_and_results[4]),
-                            convT6.Unbox(storeContext, store, args_and_results[5]),
-                            convT7.Unbox(storeContext, store, args_and_results[6]),
-                            convT8.Unbox(storeContext, store, args_and_results[7]),
-                            convT9.Unbox(storeContext, store, args_and_results[8]),
-                            convT10.Unbox(storeContext, store, args_and_results[9]),
-                            convT11.Unbox(storeContext, store, args_and_results[10]),
-                            convT12.Unbox(storeContext, store, args_and_results[11]));
+                            convT1.Unbox(storeContext, store!, args_and_results[0]),
+                            convT2.Unbox(storeContext, store!, args_and_results[1]),
+                            convT3.Unbox(storeContext, store!, args_and_results[2]),
+                            convT4.Unbox(storeContext, store!, args_and_results[3]),
+                            convT5.Unbox(storeContext, store!, args_and_results[4]),
+                            convT6.Unbox(storeContext, store!, args_and_results[5]),
+                            convT7.Unbox(storeContext, store!, args_and_results[6]),
+                            convT8.Unbox(storeContext, store!, args_and_results[7]),
+                            convT9.Unbox(storeContext, store!, args_and_results[8]),
+                            convT10.Unbox(storeContext, store!, args_and_results[9]),
+                            convT11.Unbox(storeContext, store!, args_and_results[10]),
+                            convT12.Unbox(storeContext, store!, args_and_results[11]));
 
-                        convTResult1.Box(storeContext, store, ref args_and_results[0], result.Item1);
-                        convTResult2.Box(storeContext, store, ref args_and_results[1], result.Item2);
-                        convTResult3.Box(storeContext, store, ref args_and_results[2], result.Item3);
-                        convTResult4.Box(storeContext, store, ref args_and_results[3], result.Item4);
+                        convTResult1.Box(storeContext, store!, ref args_and_results[0], result.Item1);
+                        convTResult2.Box(storeContext, store!, ref args_and_results[1], result.Item2);
+                        convTResult3.Box(storeContext, store!, ref args_and_results[2], result.Item3);
+                        convTResult4.Box(storeContext, store!, ref args_and_results[3], result.Item4);
                         
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
                         return IntPtr.Zero;
                     }
                     catch (Exception ex)

@@ -200,6 +200,7 @@ namespace Wasmtime
             var storeHandle = GCHandle.Alloc(this, GCHandleType.Weak);
 
             handle = new Handle(Native.wasmtime_store_new(engine.NativeHandle, (IntPtr)storeHandle, Finalizer));
+            contextHandle = Native.wasmtime_store_context(handle);
 
         }
 
@@ -375,7 +376,7 @@ namespace Wasmtime
                 }
 
                 EnsureAccessibleFromCurrentThread();
-                return new StoreContext(Native.wasmtime_store_context(NativeHandle));
+                return new StoreContext(contextHandle);
             }
         }
 
@@ -394,7 +395,7 @@ namespace Wasmtime
                 }
 
                 EnsureAccessibleFromCurrentThread(allowDuringAsyncExecution: true);
-                return new StoreContext(Native.wasmtime_store_context(NativeHandle));
+                return new StoreContext(contextHandle);
             }
         }
 
@@ -589,6 +590,7 @@ namespace Wasmtime
         }
 
         private readonly Handle handle;
+        private readonly IntPtr contextHandle;
         private readonly object executionSync = new();
         private int executionOwnerThreadId;
         private int executionDepth;

@@ -18,11 +18,48 @@ void GenerateCallbackContent(
                         {
                             #>var storeContext = store.Context;<#
                         }
-                        else
+                        else if (storeAvailable)
                         {
                             #>var caller = new Caller(callerPtr);
                         var storeContext = caller.context;
                         var store = caller.store;
+<#
+                        }
+                        else
+                        {
+                            #>var requiresCallerContext = <#= hasCaller ? "true" : "false" #><#
+    for (int i = 0; i < parameterCount; i++)
+    {
+        string genericType = "T";
+        if (parameterCount > 1)
+        {
+            genericType += (i + 1).ToString(CultureInfo.InvariantCulture);
+        }
+
+        #> || conv<#= genericType #>.RequiresStoreContext<#
+    }
+
+    for (int i = 0; i < resultCount; i++)
+    {
+        string genericType = "TResult";
+        if (resultCount > 1)
+        {
+            genericType += (i + 1).ToString(CultureInfo.InvariantCulture);
+        }
+
+        #> || conv<#= genericType #>.RequiresStoreContext<#
+    }
+    #>;
+                        StoreContext storeContext = default;
+                        Store? store = null;
+                        Caller caller = default;
+
+                        if (requiresCallerContext)
+                        {
+                            caller = new Caller(callerPtr);
+                            storeContext = caller.context;
+                            store = caller.store;
+                        }
 <#
                         }
                         #>
@@ -49,7 +86,7 @@ void GenerateCallbackContent(
             genericType += (i + 1).ToString(CultureInfo.InvariantCulture);
         }
 
-        #>conv<#= genericType #>.Unbox(storeContext, store, args_and_results[<#= i.ToString(CultureInfo.InvariantCulture) #>])<#
+        #>conv<#= genericType #>.Unbox(storeContext, <#= storeAvailable ? "store" : "store!" #>, args_and_results[<#= i.ToString(CultureInfo.InvariantCulture) #>])<#
 
         if (i + 1 < parameterCount)
         {
@@ -75,7 +112,7 @@ void GenerateCallbackContent(
             tupleAccessor = ".Item" + (i + 1).ToString(CultureInfo.InvariantCulture);
         }
 
-        #>conv<#= genericType #>.Box(storeContext, store, ref args_and_results[<#= i.ToString(CultureInfo.InvariantCulture) #>], result<#= tupleAccessor #>);
+        #>conv<#= genericType #>.Box(storeContext, <#= storeAvailable ? "store" : "store!" #>, ref args_and_results[<#= i.ToString(CultureInfo.InvariantCulture) #>], result<#= tupleAccessor #>);
                         <#
     }
     #>
@@ -83,8 +120,11 @@ void GenerateCallbackContent(
 <# if (cooperativeYieldAfterCallback)
 {
 #>
-                        _ = global::System.Threading.Thread.Yield();
-                        global::System.Threading.Thread.Sleep(0);
+                        if (string.Equals(name, "spawn", StringComparison.Ordinal))
+                        {
+                            _ = global::System.Threading.Thread.Yield();
+                            global::System.Threading.Thread.Sleep(50);
+                        }
 <# 
 }
 #>
