@@ -129,6 +129,109 @@ namespace Wasmtime.Tests
         }
 
         [Fact]
+        public void ItSurfacesManagedErrorWhenPthreadWorkerReEntersSharedStore()
+        {
+            using var engine = new Engine();
+            using var module = Module.FromText(
+                engine,
+                "pthread-wait-shared-store-contention",
+                """
+                (module
+                  (import "env" "spawn" (func $spawn (param i32 i32) (result i32)))
+                  (import "env" "pthread_cond_wait" (func $pthread_cond_wait (param i32 i32) (result i32)))
+                  (table (export "__indirect_function_table") 4096 funcref)
+                  (elem (i32.const 3750) $kfs_thread_start)
+
+                  (func $kfs_sem_down (param $cond i32) (param $mutex i32) (result i32)
+                    local.get $cond
+                    local.get $mutex
+                    call $pthread_cond_wait)
+
+                  (func $lkl_start_kernel (result i32)
+                    i32.const 9747048
+                    i32.const 9747024
+                    call $kfs_sem_down)
+
+                  (func $kfs_thread_start (param i32) (result i32)
+                    i32.const 0)
+
+                  (func (export "kfs_init") (result i32)
+                    i32.const 3750
+                    i32.const 0
+                    call $spawn
+                    drop
+                    call $lkl_start_kernel))
+                """);
+
+            using var store = new Store(engine);
+            using var linker = new Linker(engine);
+            using var workerCompleted = new ManualResetEventSlim(false);
+
+            const int expectedStartRoutine = 3750;
+            Exception? workerException = null;
+            Table? table = null;
+
+            linker.DefineFunction("env", "spawn", (int startRoutine, int startArg) =>
+            {
+                var thread = new Thread(() =>
+                {
+                    try
+                    {
+                        startRoutine.Should().Be(expectedStartRoutine);
+                        var start = table!.GetElement(unchecked((uint)startRoutine)) as Function;
+                        start.Should().NotBeNull();
+                        var startFunc = start!.WrapFunc<int, int>();
+                        startFunc.Should().NotBeNull();
+                        _ = startFunc!(startArg);
+                    }
+                    catch (Exception ex)
+                    {
+                        workerException = ex;
+                    }
+                    finally
+                    {
+                        workerCompleted.Set();
+                    }
+                })
+                {
+                    IsBackground = true,
+                    Name = "wasmtime-pthread-shared-store-contention-worker"
+                };
+
+                thread.Start();
+                return 0;
+            });
+
+            linker.DefineFunction("env", "pthread_cond_wait", (int condPtr, int mutexPtr) =>
+            {
+                workerCompleted.Wait(TimeSpan.FromSeconds(3))
+                    .Should()
+                    .BeTrue("worker thread should complete while pthread_cond_wait is active");
+
+                if (workerException is not null)
+                {
+                    throw new InvalidOperationException(
+                        $"pthread worker failed while waiting on cond={condPtr} mutex={mutexPtr}. tid=2 startRoutine={expectedStartRoutine} {workerException.GetType().Name}: {workerException.Message}",
+                        workerException);
+                }
+
+                return 0;
+            });
+
+            var instance = linker.Instantiate(store, module);
+            table = instance.GetTable("__indirect_function_table");
+            table.Should().NotBeNull();
+
+            var kfsInit = instance.GetFunction("kfs_init")!.WrapFunc<int>();
+            kfsInit.Should().NotBeNull();
+
+            Action invoke = () => _ = kfsInit!();
+            invoke.Should().Throw<WasmtimeException>()
+                .Which.Message.Should().Contain("pthread worker failed while waiting on cond=")
+                .And.Contain("Concurrent access to a Store from multiple threads is not supported");
+        }
+
+        [Fact]
         public void ItAllowsPthreadWaitFlowWithoutCrossThreadStoreFaults()
         {
             using var config = new Config()
